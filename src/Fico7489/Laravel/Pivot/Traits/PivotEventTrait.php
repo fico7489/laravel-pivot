@@ -59,17 +59,6 @@ trait PivotEventTrait
      */
     public function fireModelEvent($event, $halt = true)
     {
-        if (! isset(static::$dispatcher)) {
-            return true;
-        }
-
-        // We will append the names of the class to the event to distinguish it from
-        // other model events that are fired, allowing us to listen on each model
-        // event set individually instead of catching event for all the models.
-        $event = "eloquent.{$event}: ".static::class;
-
-        $method = $halt ? 'until' : 'fire';
-
-        return static::$dispatcher->$method($event, $this);
+        return parent::fireModelEvent($event, $halt);
     }
 }
