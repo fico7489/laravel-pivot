@@ -1,7 +1,7 @@
 {
     "name": "fico7489/laravel-pivot",
     "type": "library",
-    "description": "Laravel fire updating|updated events on base model when BelongsToMany methods are being called. Covers sync(), attach(), detach() and updateExistingPivot() functions.",
+    "description": "Laravel updating|updated events for sync, attach, detach and updateExistingPivot.",
     "keywords": [
         "Laravel",
         "Laravel pivot",
