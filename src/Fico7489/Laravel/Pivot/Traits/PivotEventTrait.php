@@ -23,7 +23,13 @@ trait PivotEventTrait
         // name of the calling function. We will use that function name as the
         // title of this relation since that is a great convention to apply.
         if (is_null($relation)) {
-            $relation = $this->getBelongsToManyCaller();
+            if (method_exists($this, 'guessBelongsToManyRelation')) {
+                // Laravel 5.5
+                $relation = $this->guessBelongsToManyRelation();
+            } else {
+                // older
+                $relation = $this->getBelongsToManyCaller();
+            }
         }
 
         // First, we'll need to determine the foreign key and "other key" for the
