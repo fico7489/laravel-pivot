@@ -6,10 +6,10 @@
         "Laravel pivot",
         "Laravel BelongsToMany"
     ],
-    "homepage": "https://github.com/fico7489/LaravelPivot",
+    "homepage": "https://github.com/fico7489/laravel-pivot",
     "support": {
-        "issues": "https://github.com/fico7489/LaravelPivot/issues",
-        "source": "https://github.com/fico7489/LaravelPivot"
+        "issues": "https://github.com/fico7489/laravel-pivot/issues",
+        "source": "https://github.com/fico7489/laravel-pivot"
     },
     "license": "MIT",
     "authors": [
