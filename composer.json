@@ -28,7 +28,7 @@
         "psr-4": {
             "Fico7489\\Laravel\\Pivot\\": "src/Fico7489/Laravel/Pivot/"
         }
-    }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
