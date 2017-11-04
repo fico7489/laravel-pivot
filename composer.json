@@ -1,6 +1,5 @@
 {
     "name": "fico7489/laravel-pivot",
-    "type": "library",
     "description": "Laravel updating|updated events for sync, attach, detach and updateExistingPivot.",
     "keywords": [
         "Laravel",
@@ -8,6 +7,10 @@
         "Laravel BelongsToMany"
     ],
     "homepage": "https://github.com/fico7489/LaravelPivot",
+    "support": {
+        "issues": "https://github.com/fico7489/LaravelPivot/issues",
+        "source": "https://github.com/fico7489/LaravelPivot"
+    },
     "license": "MIT",
     "authors": [
         {
@@ -26,4 +29,6 @@
             "Fico7489\\Laravel\\Pivot\\": "src/Fico7489/Laravel/Pivot/"
         }
     }
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
