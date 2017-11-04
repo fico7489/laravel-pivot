@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Fico7489\\Laravel\\Pivot\\": "src/Fico7489/Laravel/Pivot/"
+            "Fico7489\\Laravel\\Pivot\\": "src"
         }
     },
     "minimum-stability": "dev",
