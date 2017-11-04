@@ -16,9 +16,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function attach($id, array $attributes = [], $touch = true)
     {
-        $this->parent->fireModelEvent('pivotAttaching');
+        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName());
         $status = parent::attach($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotAttached');
+        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName());
 
         return $status;
     }
@@ -32,9 +32,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {
-        $this->parent->fireModelEvent('pivotDetaching');
+        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName());
         $status = parent::detach($ids, $touch);
-        $this->parent->fireModelEvent('pivotDetached');
+        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName());
 
         return $status;
     }
@@ -49,9 +49,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
     {
-        $this->parent->fireModelEvent('pivotUpdating');
+        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName());
         $status = parent::updateExistingPivot($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotUpdated');
+        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName());
 
         return $status;
     }
