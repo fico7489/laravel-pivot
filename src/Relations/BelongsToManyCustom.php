@@ -6,23 +6,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class BelongsToManyCustom extends BelongsToMany
 {
-
-    /**
-     * Sync the intermediate tables with a list of IDs or collection of models.
-     *
-     * @param  \Illuminate\Database\Eloquent\Collection|array  $ids
-     * @param  bool   $detaching
-     * @return array
-     */
-    public function sync($ids, $detaching = true)
-    {
-        $this->parent->fireModelEvent('updating');
-        $status = parent::sync($ids, $detaching);
-        $this->parent->fireModelEvent('updated');
-
-        return $status;
-    }
-
     /**
      * Attach a model to the parent.
      *
@@ -33,9 +16,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function attach($id, array $attributes = [], $touch = true)
     {
-        $this->parent->fireModelEvent('updating');
+        $this->parent->fireModelEvent('pivotAttaching');
         $status = parent::attach($id, $attributes, $touch);
-        $this->parent->fireModelEvent('updated');
+        $this->parent->fireModelEvent('pivotAttached');
 
         return $status;
     }
@@ -49,9 +32,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {
-        $this->parent->fireModelEvent('updating');
+        $this->parent->fireModelEvent('pivotDetaching');
         $status = parent::detach($ids, $touch);
-        $this->parent->fireModelEvent('updated');
+        $this->parent->fireModelEvent('pivotDetached');
 
         return $status;
     }
@@ -66,9 +49,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
     {
-        $this->parent->fireModelEvent('updating');
+        $this->parent->fireModelEvent('pivotUpdating');
         $status = parent::updateExistingPivot($id, $attributes, $touch);
-        $this->parent->fireModelEvent('updated');
+        $this->parent->fireModelEvent('pivotUpdated');
 
         return $status;
     }
