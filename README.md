@@ -1,23 +1,22 @@
 # Laravel Pivot
 
-With this package Laravel fires updating|updated events on base model when BelongsToMany methods are being called.
-Covers sync(), attach(), detach() and updateExistingPivot() methods.
+This package introduces new eloquent events for changes on BelongsToMany relation.
 
 # Laravel versions
 
 | Laravel Version | Package Tag | Supported |
 |-----------------|-------------|-----------|
-| 5.5.x | 1.x | yes |
-| 5.4.x | 1.x | yes |
-| 5.3.x | 1.x | yes |
-| 5.2.x | 1.x | yes |
+| 5.5.x | 1.5.x | yes |
+| 5.4.x | 1.4.x | yes |
+| 5.3.x | 1.3.x | yes |
+| 5.2.x | 1.2.x | yes |
 | <5.2 | - | no |
 
 # How to use
 
 1.Install package with composer
 ```
-composer require fico7489/laravel-pivot:"~1.0"
+composer require fico7489/laravel-pivot:"~1.*"
 ```
 2.Use Fico7489\Laravel\Pivot\Traits\PivotEventTrait trait in your base model or only in particular models.
 
@@ -36,56 +35,68 @@ and that's it, enjoy.
 
 # Eloquent events
 
-Eloquent have many events (see more https://laravel.com/docs/5.5/eloquent#events) including 
-updating -> before the model will be updated
-updated -> after the model is updated
+You can check all eloquent events here:  https://laravel.com/docs/5.5/eloquent#events) 
 
-If your User model looks like this : 
+New events are :
 
 ```
-...
-class class User extends BaseModel
+pivotAttaching, pivotAttached
+pivotDetaching, pivotDetached,
+pivotUpdating, pivotUpdated,
+```
+
+Best way to catch them is with model functions : 
+
+```
+public static function boot()
 {
-    ...
-    public static function boot()
-    {
-        parent::boot();
+    parent::boot();
 
-        static::updated(function ($user) {
-            echo 'updating first_name';
-        });
+    static::pivotAttaching(function ($model, $relation) {
+        //here you also know relation name
+    });
+    
+    static::pivotAttached(function ($model, $relation) {
+        //
+    });
+    
+    static::pivotDetaching(function ($model, $relation) {
+        //
+    });
 
-        static::updating(function ($user) {
-            echo 'updating';
-        });
-    }
-...
+    static::pivotDetached(function ($model, $relation) {
+        //
+    });
+    
+    static::pivotUpdating(function ($model, $relation) {
+        //
+    });
+    
+    static::pivotUpdated(function ($model, $relation) {
+        //
+    });
+    
+    static::updating(function ($model) {
+        //this is how we catch standard eloquent events
+    });
+}
 ```
 
-And then if you run this : 
+You can also listen this events like other eloqent events by this way:
 
 ```
-$user = User::find(1);
-$user->update(['first_name' => 'changed']);
+\Event::listen('eloquent.*', function ($model, $relation = null) {
+    $eventName = \Event::firing();
+});
 ```
+# When events are fired
 
-You will see this output : 
+Four BelongsToMany methods fire this events : 
 
-```
-updating
-updating
-```
-
-But if User model have relation roles() and if you run sync  on this BelongsToMany relation:
-
-```
-$user = User::find(1);
-$user->roles()->sync([1, 2, 3]);
-```
-
-The any event is not fired on User, RoleUser or Role model. Here this package jumps in and if you put Trait (Fico7489\Laravel\Pivot\Traits\PivotEventTrait) in your model updating and updated events will be fired in that case.
-
-Some people want some other events here e.g. 'beforeSync', 'afterSync' but this package use 'updating' and 'updated' events.
+attach() -> fires only pivotAttaching and pivotAttached
+detach() -> fires only pivotDetaching and pivotDetached
+updateExistingPivot() -> fires only pivotUpdating and pivotUpdated
+sync() -> fires pivotAttaching, pivotAttached, pivotDetaching and pivotDetached
 
 License
 ----

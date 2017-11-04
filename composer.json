@@ -1,6 +1,6 @@
 {
     "name": "fico7489/laravel-pivot",
-    "description": "Laravel updating|updated events for sync, attach, detach and updateExistingPivot.",
+    "description": "This package introduces new eloquent events for changes on BelongsToMany relation.",
     "keywords": [
         "Laravel",
         "Laravel pivot",
@@ -22,7 +22,7 @@
     ],
     "require": {
         "php" : ">=5.4.0",
-        "laravel/framework": ">=5.2 <5.4"
+        "illuminate/database": "5.2.*"
     },
     "require-dev": {
         "mockery/mockery": "^0.9",
