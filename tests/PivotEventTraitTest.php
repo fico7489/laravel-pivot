@@ -35,7 +35,7 @@ class PivotEventTraitTest extends TestCase
         $this->startListening();
 
         $user = User::find(1);
-        $user->roles()->attach([1]);
+        $user->roles()->attach([1, 2]);
 
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
@@ -48,7 +48,7 @@ class PivotEventTraitTest extends TestCase
         $user->roles()->attach([1, 2 ,3]);
 
         $this->startListening();
-        $user->roles()->detach([1]);
+        $user->roles()->detach([1, 2]);
 
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
@@ -66,6 +66,21 @@ class PivotEventTraitTest extends TestCase
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdating: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdated: ' . User::class, 'name'));
         $this->assertEquals(2, count(self::$events));
+    }
+    
+    public function test_sync_events()
+    {
+        $user = User::find(1);
+        $user->roles()->attach([2 ,3]);
+
+        $this->startListening();
+        $user->roles()->sync([1]);
+
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdating: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdated: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
+        $this->assertEquals(4, count(self::$events));
     }
 
     public function test_relation_null(){
