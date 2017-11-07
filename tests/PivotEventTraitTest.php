@@ -88,10 +88,24 @@ class PivotEventTraitTest extends TestCase
         $this->startListening();
         $user->roles()->sync([1]);
 
-        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdating: '  . User::class, 'name'));
-        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdated: '   . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: '  . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: '   . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: '  . User::class, 'name'));
+        $this->assertEquals(4, count(self::$events));
+    }
+    
+    public function test_standard_update_event()
+    {
+        $user = User::find(1);
+        
+        $this->startListening();
+        $user->update(['name' => 'different']);
+
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.updating: '  . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.updated: '   . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.saving: '    . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.saved: '     . User::class, 'name'));
         $this->assertEquals(4, count(self::$events));
     }
 
@@ -129,6 +143,6 @@ class PivotEventTraitTest extends TestCase
                 return $item;
         }
 
-        return false;
+        return null;
     }
 }
