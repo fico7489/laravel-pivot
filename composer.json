@@ -2,9 +2,11 @@
     "name": "fico7489/laravel-pivot",
     "description": "This package introduces new eloquent events for changes on pivot table.",
     "keywords": [
-        "Laravel",
-        "Laravel pivot",
-        "Laravel BelongsToMany"
+        "laravel pivot events",
+        "laravel pivot",
+        "laravel BelongsToMany events",
+        "laravel BelongsToMany",
+        "laravel"
     ],
     "homepage": "https://github.com/fico7489/laravel-pivot",
     "support": {
