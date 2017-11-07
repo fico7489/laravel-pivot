@@ -16,9 +16,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function attach($id, array $attributes = [], $touch = true)
     {
-        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName());
+        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $this->pullArrayFromIds($id));
         $status = parent::attach($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName());
+        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $this->pullArrayFromIds($id));
 
         return $status;
     }
@@ -32,9 +32,9 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {
-        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName());
+        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $this->pullArrayFromIds($ids));
         $status = parent::detach($ids, $touch);
-        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName());
+        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $this->pullArrayFromIds($ids));
 
         return $status;
     }
@@ -49,10 +49,24 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
     {
-        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName());
+        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), [$id]);
         $status = parent::updateExistingPivot($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName());
+        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), [$id]);
 
         return $status;
+    }
+    
+    private function pullArrayFromIds($ids){
+        if ($ids instanceof Model) {
+            $ids = $ids->getKey();
+        }
+
+        if ($ids instanceof Collection) {
+            $ids = $ids->modelKeys();
+        }
+
+        $ids = (array) $ids;
+        
+        return $ids;
     }
 }

@@ -21,8 +21,8 @@ class PivotEventTraitTest extends TestCase
         Role::create(['name' => 'manager']);
         Role::create(['name' => 'customer']);
 
-        \Event::listen('eloquent.*', function ($model, $relation = null) {
-            self::$events[] = ['name' => \Event::firing(), 'model' => $model, 'relation' => $relation];
+        \Event::listen('eloquent.*', function ($model, $relation = null, $pivotIds = []) {
+            self::$events[] = ['name' => \Event::firing(), 'model' => $model, 'relation' => $relation, 'pivotIds' => $pivotIds];
         });
     }
 
@@ -39,6 +39,10 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
+        
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1, 2]);
+        
         $this->assertEquals(2, count(self::$events));
     }
 
@@ -48,10 +52,14 @@ class PivotEventTraitTest extends TestCase
         $user->roles()->attach([1, 2 ,3]);
 
         $this->startListening();
-        $user->roles()->detach([1, 2]);
+        $user->roles()->detach([2, 3]);
 
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
+        
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [2, 3]);
+        
         $this->assertEquals(2, count(self::$events));
     }
 
@@ -65,6 +73,10 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdating: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdated: ' . User::class, 'name'));
+        
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1]);
+        
         $this->assertEquals(2, count(self::$events));
     }
     
@@ -76,10 +88,10 @@ class PivotEventTraitTest extends TestCase
         $this->startListening();
         $user->roles()->sync([1]);
 
-        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdating: ' . User::class, 'name'));
-        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdated: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdating: '  . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotUpdated: '   . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
-        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: '  . User::class, 'name'));
         $this->assertEquals(4, count(self::$events));
     }
 

@@ -57,7 +57,7 @@ trait PivotEventTrait
      * @param  bool  $halt
      * @return mixed
      */
-    public function fireModelEvent($event, $halt = true, $relationName = null)
+    public function fireModelEvent($event, $halt = true, $relationName = null, $pivotIds = [])
     {
         if (! isset(static::$dispatcher)) {
             return true;
@@ -70,7 +70,7 @@ trait PivotEventTrait
 
         $method = $halt ? 'until' : 'fire';
 
-        $payload = ['model' => $this, 'relation' => $relationName];
+        $payload = ['model' => $this, 'relation' => $relationName, 'pivotIds' => $pivotIds];
 
         return static::$dispatcher->$method($event, $payload);
     }
