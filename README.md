@@ -92,12 +92,12 @@ You can also listen this events like other eloqent events by this way:
 ```
 # When events are fired
 
-Four BelongsToMany methods fire this events : 
+Four BelongsToMany methods fires events from this package : 
 
-attach() -> fires only pivotAttaching and pivotAttached
-detach() -> fires only pivotDetaching and pivotDetached
-updateExistingPivot() -> fires only pivotUpdating and pivotUpdated
-sync() -> fires pivotAttaching, pivotAttached, pivotDetaching and pivotDetached
+* attach() -> fires only pivotAttaching and pivotAttached
+* detach() -> fires only pivotDetaching and pivotDetached
+* updateExistingPivot() -> fires only pivotUpdating and pivotUpdated
+* sync() -> fires pivotAttaching, pivotAttached, pivotDetaching and pivotDetached
 
 # One real example
 
