@@ -1,6 +1,6 @@
 {
     "name": "fico7489/laravel-pivot",
-    "description": "This package introduces new eloquent events for changes on BelongsToMany relation.",
+    "description": "This package introduces new eloquent events for changes on pivot table.",
     "keywords": [
         "Laravel",
         "Laravel pivot",
