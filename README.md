@@ -6,12 +6,11 @@ This package introduces new eloquent events for changes on pivot table.
 
 | Laravel Version | Package Tag | Supported |
 |-----------------|-------------|-----------|
+| 5.5.x | 2.1.x | yes |
 | 5.4.x | 2.0.x | yes |
 | 5.3.x | 1.3.x | yes |
 | 5.2.x | 1.2.x | yes |
 | <5.2 | - | no |
-
-*Support for laravel 5.4 and 5.5 coming soon
 
 # Laravel Problems
 
