@@ -90,7 +90,7 @@ You can also listen this events like other eloqent events by this way:
 
 ```
 \Event::listen('eloquent.*', function ($eventName, array $data) {
-    ///
+    //
 });
 ```
 # When events are fired
@@ -121,7 +121,7 @@ class User extends Model
     
     static::pivotAttached(function ($model, $relationName, $pivotIds) {
         echo get_class($model);
-        echo get_class($relationName);
+        echo $relationName;
         print_r($pivotIds);
     });
 ```
