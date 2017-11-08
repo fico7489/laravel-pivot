@@ -10,7 +10,6 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         
         $this->loadMigrationsFrom([
             '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__.'/database/migrations/'),
         ]);
     }
 
@@ -23,5 +22,10 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             'database' => ':memory:',
             'prefix'   => '',
         ]);
+    }
+    
+    protected function getPackageProviders($app)
+    {
+        return [ServiceProvider::class];
     }
 }

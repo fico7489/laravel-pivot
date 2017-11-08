@@ -23,11 +23,12 @@
         }
     ],
     "require": {
-        "illuminate/database": "5.3.*"
+        "illuminate/database": "5.4.*"
     },
     "require-dev": {
         "mockery/mockery": "^0.9",
-        "orchestra/testbench": "3.3.*",
+        "orchestra/testbench": "~3.4.0",
+        "orchestra/database": "~3.4.0",
         "phpunit/phpunit": "~4.8|~5.0"
     },
     "autoload": {

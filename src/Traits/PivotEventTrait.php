@@ -6,34 +6,33 @@ use Fico7489\Laravel\Pivot\Relations\BelongsToManyCustom;
 
 trait PivotEventTrait
 {
-
     /**
      * Define a many-to-many relationship.
      *
      * @param  string  $related
      * @param  string  $table
      * @param  string  $foreignKey
-     * @param  string  $otherKey
+     * @param  string  $relatedKey
      * @param  string  $relation
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function belongsToMany($related, $table = null, $foreignKey = null, $otherKey = null, $relation = null)
+    public function belongsToMany($related, $table = null, $foreignKey = null, $relatedKey = null, $relation = null)
     {
         // If no relationship name was passed, we will pull backtraces to get the
         // name of the calling function. We will use that function name as the
         // title of this relation since that is a great convention to apply.
         if (is_null($relation)) {
-            $relation = $this->getBelongsToManyCaller();
+            $relation = $this->guessBelongsToManyRelation();
         }
 
         // First, we'll need to determine the foreign key and "other key" for the
         // relationship. Once we have determined the keys we'll make the query
         // instances as well as the relationship instances we need for this.
+        $instance = $this->newRelatedInstance($related);
+
         $foreignKey = $foreignKey ?: $this->getForeignKey();
 
-        $instance = new $related;
-
-        $otherKey = $otherKey ?: $instance->getForeignKey();
+        $relatedKey = $relatedKey ?: $instance->getForeignKey();
 
         // If no table name was provided, we can guess it by concatenating the two
         // models using underscores in alphabetical order. The two model names
@@ -42,14 +41,11 @@ trait PivotEventTrait
             $table = $this->joiningTable($related);
         }
 
-        // Now we're ready to create a new query builder for the related model and
-        // the relationship instances for the relation. The relations will set
-        // appropriate query constraint and entirely manages the hydrations.
-        $query = $instance->newQuery();
-
-        return new BelongsToManyCustom($query, $this, $table, $foreignKey, $otherKey, $relation);
+        return new BelongsToManyCustom(
+            $instance->newQuery(), $this, $table, $foreignKey, $relatedKey, $relation
+        );
     }
-
+    
     /**
      * Fire the given event for the model.
      *
@@ -63,18 +59,25 @@ trait PivotEventTrait
             return true;
         }
 
-        // We will append the names of the class to the event to distinguish it from
-        // other model events that are fired, allowing us to listen on each model
-        // event set individually instead of catching event for all the models.
-        $event = "eloquent.{$event}: ".static::class;
-
+        // First, we will get the proper method to call on the event dispatcher, and then we
+        // will attempt to fire a custom, object based event for the given event. If that
+        // returns a result we can return that result, or we'll call the string events.
         $method = $halt ? 'until' : 'fire';
 
+        $result = $this->filterModelEventResults(
+            $this->fireCustomModelEvent($event, $method)
+        );
+
+        if ($result === false) {
+            return false;
+        }
+        
         $payload = ['model' => $this, 'relation' => $relationName, 'pivotIds' => $pivotIds];
-
-        return static::$dispatcher->$method($event, $payload);
+        
+        return ! empty($result) ? $result : static::$dispatcher->{$method}(
+            "eloquent.{$event}: ".static::class, $payload
+        );
     }
-
 
     public static function pivotAttaching($callback, $priority = 0)
     {
