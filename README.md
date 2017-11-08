@@ -89,8 +89,8 @@ public static function boot()
 You can also listen this events like other eloqent events by this way:
 
 ```
-\Event::listen('eloquent.*', function ($model, $relation = null, $pivotIds = []) {
-    $eventName = \Event::firing();
+\Event::listen('eloquent.*', function ($eventName, array $data) {
+    ///
 });
 ```
 # When events are fired
