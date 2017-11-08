@@ -20,9 +20,9 @@ class PivotEventTraitTest extends TestCase
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'manager']);
         Role::create(['name' => 'customer']);
-
-        \Event::listen('eloquent.*', function ($model, $relation = null, $pivotIds = []) {
-            self::$events[] = ['name' => \Event::firing(), 'model' => $model, 'relation' => $relation, 'pivotIds' => $pivotIds];
+        
+        \Event::listen('eloquent.*', function ($eventName, array $data) {
+            self::$events[] = ['name' => $eventName, 'model' => $data['model'], 'relation' => $data['relation'], 'pivotIds' => $data['pivotIds']];
         });
     }
 
