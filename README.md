@@ -20,7 +20,7 @@ Calling sync(), attach(), detach() or updateExistingPivot() on BelongsToMany rel
 
 1.Install package with composer
 ```
-composer require fico7489/laravel-pivot:"1.2.*"
+composer require fico7489/laravel-pivot:"2.1.*"
 ```
 2.Use Fico7489\Laravel\Pivot\Traits\PivotEventTrait trait in your base model or only in particular models.
 
