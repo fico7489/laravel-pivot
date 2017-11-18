@@ -135,8 +135,8 @@ class Role extends Model
 
 Running this code 
 ```
-$user = User::first();
-$user->roles()->sync([1, 2]);
+$user = User::first();           //assuming that pivot table is empty
+$user->roles()->attach([1, 2]);  //or $user->roles()->detach([1, 2]);
 ```
 
 You will see this output
@@ -146,6 +146,27 @@ App\Models\User
 roles
 [1, 2]
 ```
+For attach() or detach() one event is dispatched for both pivot ids.
+
+Running this code 
+```
+$user = User::first();           //assuming that pivot table is empty
+$user->roles()->sync([1, 2]);
+```
+
+You will see this output
+
+```
+App\Models\User
+roles
+[1]
+
+App\Models\User
+roles
+[2]
+```
+
+For sync() event is dispatched for each pivot ids.
 
 License
 ----
