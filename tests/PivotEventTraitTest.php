@@ -129,12 +129,18 @@ class PivotEventTraitTest extends TestCase
 
         $this->startListening();
         $user->roles()->sync([1, 2]);
+        $pivotIds  = self::$events[0]['pivotIds'];
+        $pivotIds2 = self::$events[2]['pivotIds'];
 
         $eventName = 'eloquent.pivotAttaching: ' . User::class;
         $event = $this->get_from_array(self::$events, $eventName, 'name');
 
         $this->assertEquals('roles', $event['relation']);
         $this->assertTrue($event['model'] instanceof Model);
+        $this->assertEquals(1, count($pivotIds));
+        $this->assertEquals(1, $pivotIds[0]);
+        $this->assertEquals(1, count($pivotIds2));
+        $this->assertEquals(2, $pivotIds2[0]);
     }
 
     private function get_from_array($items, $value, $field)
