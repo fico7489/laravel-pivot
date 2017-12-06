@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PivotEventTraitTest extends TestCase
 {
-    static $events = [];
+    public static $events = [];
 
     public function setUp()
     {
@@ -22,13 +22,14 @@ class PivotEventTraitTest extends TestCase
         Role::create(['name' => 'customer']);
         
         \Event::listen('eloquent.*', function ($eventName, array $data) {
-            if(strpos($eventName, 'eloquent.retrieved') !== 0){
+            if (strpos($eventName, 'eloquent.retrieved') !== 0) {
                 self::$events[] = ['name' => $eventName, 'model' => $data['model'], 'relation' => $data['relation'], 'pivotIds' => $data['pivotIds']];
             }
         });
     }
 
-    private function startListening(){
+    private function startListening()
+    {
         self::$events = [];
     }
 
@@ -36,11 +37,11 @@ class PivotEventTraitTest extends TestCase
     {
         $this->startListening();
 
-		$this->assertEquals(0, \DB::table('role_user')->count());
+        $this->assertEquals(0, \DB::table('role_user')->count());
         $user = User::find(1);
         $user->roles()->attach([1, 2]);
 
-		$this->assertEquals(2, \DB::table('role_user')->count());
+        $this->assertEquals(2, \DB::table('role_user')->count());
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
         
@@ -54,11 +55,11 @@ class PivotEventTraitTest extends TestCase
     {
         $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
-		$this->assertEquals(3, \DB::table('role_user')->count());
+        $this->assertEquals(3, \DB::table('role_user')->count());
 
         $this->startListening();
         $user->roles()->detach([2, 3]);
-		$this->assertEquals(1, \DB::table('role_user')->count());
+        $this->assertEquals(1, \DB::table('role_user')->count());
 
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
@@ -90,12 +91,12 @@ class PivotEventTraitTest extends TestCase
     {
         $user = User::find(1);
         $user->roles()->attach([2 ,3]);
-		$this->assertEquals(2, \DB::table('role_user')->count());
+        $this->assertEquals(2, \DB::table('role_user')->count());
 
         $this->startListening();
         $user->roles()->sync([1]);
 
-		$this->assertEquals(1, \DB::table('role_user')->count());
+        $this->assertEquals(1, \DB::table('role_user')->count());
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: '  . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: '   . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
@@ -117,7 +118,8 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_relation_null(){
+    public function test_relation_null()
+    {
         $user = User::find(1);
 
         $this->startListening();
@@ -130,9 +132,10 @@ class PivotEventTraitTest extends TestCase
         $this->assertTrue($event['model'] instanceof Model);
     }
 
-    public function test_relation_not_null(){
+    public function test_relation_not_null()
+    {
         $user = User::find(1);
-		$this->assertEquals(0, \DB::table('role_user')->count());
+        $this->assertEquals(0, \DB::table('role_user')->count());
 
         $this->startListening();
         $user->roles()->sync([1, 2]);
@@ -142,7 +145,7 @@ class PivotEventTraitTest extends TestCase
         $eventName = 'eloquent.pivotAttaching: ' . User::class;
         $event = $this->get_from_array(self::$events, $eventName, 'name');
 
-		$this->assertEquals(2, \DB::table('role_user')->count());
+        $this->assertEquals(2, \DB::table('role_user')->count());
         $this->assertEquals('roles', $event['relation']);
         $this->assertTrue($event['model'] instanceof Model);
         $this->assertEquals(1, count($pivotIds));
@@ -153,10 +156,10 @@ class PivotEventTraitTest extends TestCase
 
     private function get_from_array($items, $value, $field)
     {
-        foreach($items as $key => $item)
-        {
-            if ( $item[$field] === $value )
+        foreach ($items as $key => $item) {
+            if ($item[$field] === $value) {
                 return $item;
+            }
         }
 
         return null;
