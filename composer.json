@@ -26,7 +26,6 @@
         "illuminate/database": "5.5.*"
     },
     "require-dev": {
-        "mockery/mockery": "^0.9",
         "orchestra/testbench": "~3.5.0",
         "orchestra/database": "~3.5.0"
     },
