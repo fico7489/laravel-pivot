@@ -51,6 +51,45 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
+    public function test_attach_model_events()
+    {
+        $this->startListening();
+
+        $this->assertEquals(0, \DB::table('role_user')->count());
+        $user = User::find(1);
+        $role = Role::find(1);
+        $user->roles()->attach($role);
+
+        $this->assertEquals(1, \DB::table('role_user')->count());
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
+
+        $pivotIds = self::$events[0]['pivotIds'];
+
+        $this->assertEquals($pivotIds, [1]);
+
+        $this->assertEquals(2, count(self::$events));
+    }
+
+    public function test_attach_collection_events()
+    {
+        $this->startListening();
+
+        $this->assertEquals(0, \DB::table('role_user')->count());
+        $user = User::find(1);
+        $roles = Role::take(2)->get();
+        $user->roles()->attach($roles);
+
+        $this->assertEquals(2, \DB::table('role_user')->count());
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
+
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1, 2]);
+
+        $this->assertEquals(2, count(self::$events));
+    }
+
     public function test_detach_events()
     {
         $user = User::find(1);
@@ -67,6 +106,46 @@ class PivotEventTraitTest extends TestCase
         $pivotIds = self::$events[0]['pivotIds'];
         $this->assertEquals($pivotIds, [2, 3]);
         
+        $this->assertEquals(2, count(self::$events));
+    }
+
+    public function test_detach_model_events()
+    {
+        $user = User::find(1);
+        $user->roles()->attach([1, 2 ,3]);
+        $this->assertEquals(3, \DB::table('role_user')->count());
+
+        $this->startListening();
+        $role = Role::find(1);
+        $user->roles()->detach($role);
+        $this->assertEquals(2, \DB::table('role_user')->count());
+
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
+
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1]);
+
+        $this->assertEquals(2, count(self::$events));
+    }
+
+    public function test_detach_collection_events()
+    {
+        $user = User::find(1);
+        $user->roles()->attach([1, 2 ,3]);
+        $this->assertEquals(3, \DB::table('role_user')->count());
+
+        $this->startListening();
+        $roles = Role::take(2)->get();
+        $user->roles()->detach($roles);
+        $this->assertEquals(1, \DB::table('role_user')->count());
+
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: ' . User::class, 'name'));
+
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1, 2]);
+
         $this->assertEquals(2, count(self::$events));
     }
 
@@ -104,6 +183,42 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
     
+    public function test_sync_model_events()
+    {
+        $user = User::find(1);
+        $user->roles()->attach([2, 3]);
+        $this->assertEquals(2, \DB::table('role_user')->count());
+
+        $this->startListening();
+        $role = Role::find(1);
+        $user->roles()->sync($role);
+
+        $this->assertEquals(1, \DB::table('role_user')->count());
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: '  . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: '   . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: '  . User::class, 'name'));
+        $this->assertEquals(4, count(self::$events));
+    }
+
+    public function test_sync_collection_events()
+    {
+        $user = User::find(1);
+        $user->roles()->attach([2, 3]);
+        $this->assertEquals(2, \DB::table('role_user')->count());
+
+        $this->startListening();
+        $roles = Role::take(2)->get(); // [1, 2]
+        $user->roles()->sync($roles);
+
+        $this->assertEquals(2, \DB::table('role_user')->count());
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: '  . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: '   . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: '  . User::class, 'name'));
+        $this->assertEquals(4, count(self::$events));
+    }
+
     public function test_standard_update_event()
     {
         $user = User::find(1);
