@@ -7,13 +7,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
-        
-        $this->loadMigrationsFrom([
-            '--database' => 'testbench',
-            '--realpath' => realpath(__DIR__.'/database/migrations/'),
-        ]);
     }
-
+    
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:
@@ -23,5 +18,10 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             'database' => ':memory:',
             'prefix'   => '',
         ]);
+    }
+    
+    protected function getPackageProviders($app)
+    {
+        return [ServiceProvider::class];
     }
 }
