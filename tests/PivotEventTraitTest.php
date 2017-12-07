@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PivotEventTraitTest extends TestCase
 {
-    static $events = [];
+    public static $events = [];
 
     public function setUp()
     {
@@ -26,7 +26,8 @@ class PivotEventTraitTest extends TestCase
         });
     }
 
-    private function startListening(){
+    private function startListening()
+    {
         self::$events = [];
     }
 
@@ -109,7 +110,8 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_relation_null(){
+    public function test_relation_null()
+    {
         $user = User::find(1);
 
         $this->startListening();
@@ -122,7 +124,8 @@ class PivotEventTraitTest extends TestCase
         $this->assertTrue($event['model'] instanceof Model);
     }
 
-    public function test_relation_not_null(){
+    public function test_relation_not_null()
+    {
         $user = User::find(1);
 
         $this->startListening();
@@ -137,10 +140,10 @@ class PivotEventTraitTest extends TestCase
 
     private function get_from_array($items, $value, $field)
     {
-        foreach($items as $key => $item)
-        {
-            if ( $item[$field] === $value )
+        foreach ($items as $key => $item) {
+            if ($item[$field] === $value) {
                 return $item;
+            }
         }
 
         return null;

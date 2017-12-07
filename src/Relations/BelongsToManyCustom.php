@@ -56,7 +56,8 @@ class BelongsToManyCustom extends BelongsToMany
         return $status;
     }
     
-    private function pullArrayFromIds($ids){
+    private function pullArrayFromIds($ids)
+    {
         if ($ids instanceof Model) {
             $ids = $ids->getKey();
         }
