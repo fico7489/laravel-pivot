@@ -1,12 +1,12 @@
 {
     "name": "fico7489/laravel-pivot",
-    "description": "This package introduces new eloquent events for changes on pivot table.",
+    "description": "This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on BelongsToMany relation.",
     "keywords": [
-        "laravel pivot events",
-        "laravel pivot",
         "laravel BelongsToMany events",
-        "laravel BelongsToMany",
-        "laravel"
+        "eloquent extra events",
+        "laravel pivot events",
+        "laravel sync events",
+        "eloquent events"
     ],
     "homepage": "https://github.com/fico7489/laravel-pivot",
     "support": {
@@ -26,10 +26,8 @@
         "illuminate/database": "5.4.*"
     },
     "require-dev": {
-        "mockery/mockery": "^0.9",
-        "orchestra/testbench": "~3.4.0",
-        "orchestra/database": "~3.4.0",
-        "phpunit/phpunit": "~4.8|~5.0"
+        "orchestra/testbench": "3.4.*",
+        "phpunit/phpunit": "~5.0"
     },
     "autoload": {
         "psr-4": {

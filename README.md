@@ -1,27 +1,26 @@
 # Laravel Pivot
 
-This package introduces new eloquent events for changes on pivot table.
+This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on  BelongsToMany relation.
 
-# Laravel versions
+## Laravel versions
 
-| Laravel Version | Package Tag | Supported |
-|-----------------|-------------|-----------|
-| 5.4.x | 2.0.x | yes |
-| 5.3.x | 1.3.x | yes |
-| 5.2.x | 1.2.x | yes |
+| Laravel Version | Package Tag | Supported | Development Branch
+|-----------------|-------------|-----------| -----------|
+| 5.5.x | 2.1.x | yes | master
+| 5.4.x | 2.0.x | yes | 2.0
+| 5.3.x | 1.3.x | yes | 1.3
+| 5.2.x | 1.2.x | yes | 1.2
 | <5.2 | - | no |
 
-*Support for laravel 5.4 and 5.5 coming soon
+## Laravel Problems
 
-# Laravel Problems
+In Laravel events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
 
-Calling sync(), attach(), detach() or updateExistingPivot() on BelongsToMany relation does not fire any events, here this package jumps in.
-
-# How to use
+## How to use
 
 1.Install package with composer
 ```
-composer require fico7489/laravel-pivot:"1.2.*"
+composer require fico7489/laravel-pivot:"2.1.*"
 ```
 2.Use Fico7489\Laravel\Pivot\Traits\PivotEventTrait trait in your base model or only in particular models.
 
@@ -38,7 +37,7 @@ abstract class BaseModel extends Model
 
 and that's it, enjoy.
 
-# Eloquent events
+## Eloquent events
 
 You can check all eloquent events here:  https://laravel.com/docs/5.5/eloquent#events) 
 
@@ -50,7 +49,7 @@ pivotDetaching, pivotDetached,
 pivotUpdating, pivotUpdated
 ```
 
-Best way to catch events is with this model functions : 
+The best way to catch events is with this model functions : 
 
 ```
 public static function boot()
@@ -87,23 +86,32 @@ public static function boot()
 }
 ```
 
-You can also listen this events like other eloqent events by this way:
+You can also see those events here : 
 
 ```
-\Event::listen('eloquent.*', function ($model, $relation = null, $pivotIds = []) {
-    $eventName = \Event::firing();
+\Event::listen('eloquent.*', function ($eventName, array $data) {
+    echo $eventName;  //e.g. 'eloquent.pivotAttached'
 });
 ```
-# When events are fired
 
-Four BelongsToMany methods fires events from this package : 
+## Which events are dispatched and when they are dispatched
 
-* attach() -> fires only pivotAttaching and pivotAttached
-* detach() -> fires only pivotDetaching and pivotDetached
-* updateExistingPivot() -> fires only pivotUpdating and pivotUpdated
-* sync() -> fires pivotAttaching, pivotAttached, pivotDetaching and pivotDetached
+Four BelongsToMany methods dispatches events from this package : 
 
-# One real example
+**attach()** -> dispatches only **one** pivotAttaching and pivotAttached event. 
+Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
+
+**detach()** -> dispatches **one** pivotDetaching and pivotDetached event.
+Even when more rows are deleted only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
+
+**updateExistingPivot()** -> dispatches only one pivotUpdating and pivotUpdated event.
+You can change only one row in pivot table with updateExistingPivot.
+
+**sync()** -> dispatches pivotAttaching, pivotAttached, pivotDetaching and pivotDetached events **more times**, depend on how many rows are added in pivot table. E.g. when you call sync() if two rows are added and one is deleted two pivotAttaching(pivotAttached) events and one pivotDetaching(pivotDetached) event will be dispatched. 
+If sync() is called but rows are not added or deleted events are not dispatched.
+
+
+## See some action
 
 We have three tables in database users(id, name), roles(id, name), role_user(user_id, role_id).
 We have two models : 
@@ -121,8 +129,16 @@ class User extends Model
     }
     
     static::pivotAttached(function ($model, $relationName, $pivotIds) {
+        echo 'pivotAttached';
         echo get_class($model);
-        echo get_class($relationName);
+        echo $relationName;
+        print_r($pivotIds);
+    });
+	
+    static::pivotDetached(function ($model, $relationName, $pivotIds) {
+        echo 'pivotDetached';
+        echo get_class($model);
+        echo $relationName;
         print_r($pivotIds);
     });
 ```
@@ -136,17 +152,41 @@ class Role extends Model
 
 Running this code 
 ```
-$user = User::first();
+$user = User::first();           //assuming that pivot table is empty
+$user->roles()->attach([1, 2]);
+```
+
+You will see this output
+
+```
+pivotAttached
+App\Models\User
+roles
+[1, 2]
+```
+For attach() or detach() one event is dispatched for both pivot ids.
+
+Running this code 
+```
+$user = User::first();           //assuming that pivot table is empty
 $user->roles()->sync([1, 2]);
 ```
 
 You will see this output
 
 ```
+pivotAttached
 App\Models\User
 roles
-[1, 2]
+[1]
+
+pivotAttached
+App\Models\User
+roles
+[2]
 ```
+
+For sync() method event is dispatched for each pivot ids.
 
 License
 ----
