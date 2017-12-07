@@ -2,6 +2,8 @@
 
 namespace Fico7489\Laravel\Pivot\Relations;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class BelongsToManyCustom extends BelongsToMany
