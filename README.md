@@ -2,7 +2,7 @@
 
 This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on  BelongsToMany relation.
 
-# Laravel versions
+## Laravel versions
 
 | Laravel Version | Package Tag | Supported | Development Branch
 |-----------------|-------------|-----------| -----------|
@@ -12,11 +12,11 @@ This package introduces new eloquent events for sync(), attach(), detach() or up
 | 5.2.x | 1.2.x | yes | 1.2
 | <5.2 | - | no |
 
-# Laravel Problems
+## Laravel Problems
 
 In Laravel events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
 
-# How to use
+## How to use
 
 1.Install package with composer
 ```
@@ -37,7 +37,7 @@ abstract class BaseModel extends Model
 
 and that's it, enjoy.
 
-# Eloquent events
+## Eloquent events
 
 You can check all eloquent events here:  https://laravel.com/docs/5.5/eloquent#events) 
 
@@ -94,7 +94,7 @@ You can also see those events here :
 });
 ```
 
-# Which events are dispatched and when they are dispatched
+## Which events are dispatched and when they are dispatched
 
 Four BelongsToMany methods dispatches events from this package : 
 
@@ -111,7 +111,7 @@ You can change only one row in pivot table with updateExistingPivot.
 If sync() is called but rows are not added or deleted events are not dispatched.
 
 
-# See some action
+## See some action
 
 We have three tables in database users(id, name), roles(id, name), role_user(user_id, role_id).
 We have two models : 
