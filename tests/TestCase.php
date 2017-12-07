@@ -7,17 +7,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->artisan('migrate', ['--database' => 'testbench']);
-
-        $migrator = $this->app->make('migrator');
-        $migrator->run(__DIR__.'/database/migrations/');
-
-        $this->beforeApplicationDestroyed(function () {
-            $this->artisan('migrate:rollback');
-        });
     }
-
+    
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:
@@ -27,5 +18,10 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             'database' => ':memory:',
             'prefix'   => '',
         ]);
+    }
+    
+    protected function getPackageProviders($app)
+    {
+        return [ServiceProvider::class];
     }
 }
