@@ -56,11 +56,11 @@ public static function boot()
 {
     parent::boot();
 
-    static::pivotAttaching(function ($model, $relationName, $pivotIds) {
+    static::pivotAttaching(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotAttached(function ($model, $relationName, $pivotIds) {
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
@@ -72,11 +72,11 @@ public static function boot()
         //
     });
     
-    static::pivotUpdating(function ($model, $relationName, $pivotIds) {
+    static::pivotUpdating(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotUpdated(function ($model, $relationName, $pivotIds) {
+    static::pivotUpdated(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
@@ -99,7 +99,7 @@ You can also see those events here :
 Four BelongsToMany methods dispatches events from this package : 
 
 **attach()** -> dispatches only **one** pivotAttaching and pivotAttached event. 
-Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
+Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable, and the changed row ids related attributes in $pivotIdsAttributes variable.
 
 **detach()** -> dispatches **one** pivotDetaching and pivotDetached event.
 Even when more rows are deleted only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
@@ -128,13 +128,22 @@ class User extends Model
         return $this->belongsToMany(Role::class);
     }
     
-    static::pivotAttached(function ($model, $relationName, $pivotIds) {
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         echo 'pivotAttached';
         echo get_class($model);
         echo $relationName;
         print_r($pivotIds);
+        print_r($pivotIdsAttributes);
     });
-	
+    
+    static::pivotUpdated(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+        echo 'pivotUpdated';
+        echo get_class($model);
+        echo $relationName;
+        print_r($pivotIds);
+        print_r($pivotIdsAttributes);
+    });
+    
     static::pivotDetached(function ($model, $relationName, $pivotIds) {
         echo 'pivotDetached';
         echo get_class($model);
@@ -150,25 +159,97 @@ class Role extends Model
     ....
 ```
 
+#### Attaching 
+
+For attach() or detach() one event is dispatched for both pivot ids.
+
+##### Attaching with int
 Running this code 
 ```
-$user = User::first();           //assuming that pivot table is empty
-$user->roles()->attach([1, 2]);
+$user = User::first();
+$user->roles()->attach(1);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1]
+[1 => []]
 ```
 
-You will see this output
 
+##### Attaching with array
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach([1]);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1]
+[1 => []]
+```
+
+
+##### Attaching with model
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach(Role::first());
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1]
+[1 => []]
+```
+
+
+##### Attaching with collection
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach(Role::get());
+```
+You will see this output
 ```
 pivotAttached
 App\Models\User
 roles
 [1, 2]
+[1 => [], 2 => []]
 ```
-For attach() or detach() one event is dispatched for both pivot ids.
+
+
+##### Attaching with array (id => attributes)
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach([1, 2 => ['attribute' => 'test']], ['attribute2' => 'test2']);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1, 2]
+[1 => [], 2 => ['attribute' => 'test', 'attribute2' => 'test2']]
+```
+
+
+#### Syncing
+
+For sync() method event is dispatched for each pivot row.
 
 Running this code 
 ```
-$user = User::first();           //assuming that pivot table is empty
+$user = User::first();
 $user->roles()->sync([1, 2]);
 ```
 
@@ -179,14 +260,45 @@ pivotAttached
 App\Models\User
 roles
 [1]
+[1 => []]
 
 pivotAttached
 App\Models\User
 roles
 [2]
+[2 => []]
 ```
 
-For sync() method event is dispatched for each pivot ids.
+#### Detaching
+
+Running this code 
+```
+$user = User::first();
+$user->roles()->detach([1, 2]);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1, 2]
+```
+
+#### Updating
+
+Running this code 
+```
+$user = User::first();
+$user->roles()->updateExistingPivot(1, ['attribute' => 'test']);
+```
+You will see this output
+```
+pivotUpdated
+App\Models\User
+roles
+[1]
+[1 => ['attribute' => 'test']]
+```
 
 License
 ----
