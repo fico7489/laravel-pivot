@@ -56,11 +56,11 @@ public static function boot()
 {
     parent::boot();
 
-    static::pivotAttaching(function ($model, $relationName, $pivotIds) {
+    static::pivotAttaching(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotAttached(function ($model, $relationName, $pivotIds) {
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
@@ -72,11 +72,11 @@ public static function boot()
         //
     });
     
-    static::pivotUpdating(function ($model, $relationName, $pivotIds) {
+    static::pivotUpdating(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotUpdated(function ($model, $relationName, $pivotIds) {
+    static::pivotUpdated(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
@@ -99,7 +99,7 @@ You can also see those events here :
 Four BelongsToMany methods dispatches events from this package : 
 
 **attach()** -> dispatches only **one** pivotAttaching and pivotAttached event. 
-Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
+Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable, and the changed row ids related attributes in $pivotIdsAttributes variable.
 
 **detach()** -> dispatches **one** pivotDetaching and pivotDetached event.
 Even when more rows are deleted only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
@@ -128,11 +128,12 @@ class User extends Model
         return $this->belongsToMany(Role::class);
     }
     
-    static::pivotAttached(function ($model, $relationName, $pivotIds) {
+    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         echo 'pivotAttached';
         echo get_class($model);
         echo $relationName;
         print_r($pivotIds);
+        print_r($pivotIdsAttributes);
     });
 	
     static::pivotDetached(function ($model, $relationName, $pivotIds) {
@@ -153,7 +154,7 @@ class Role extends Model
 Running this code 
 ```
 $user = User::first();           //assuming that pivot table is empty
-$user->roles()->attach([1, 2]);
+$user->roles()->attach([1, 2 => ['attribute' => 'test']]);
 ```
 
 You will see this output
@@ -163,6 +164,7 @@ pivotAttached
 App\Models\User
 roles
 [1, 2]
+[1 => [], 2 => ['attribute' => 'test']]
 ```
 For attach() or detach() one event is dispatched for both pivot ids.
 
