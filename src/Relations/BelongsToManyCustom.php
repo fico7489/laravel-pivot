@@ -35,7 +35,7 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {
-        list($idsOnly, $attributes) = $this->getIdsWithAttributes($ids);
+        list($idsOnly) = $this->getIdsWithAttributes($ids);
 
         $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
         parent::detach($ids, $touch);
