@@ -16,13 +16,13 @@ class BelongsToManyCustom extends BelongsToMany
      * @param  bool   $touch
      * @return void
      */
-    public function attach($id, array $attributes = [], $touch = true)
+    public function attach($ids, array $attributes = [], $touch = true)
     {
-        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $this->pullArrayFromIds($id));
-        $status = parent::attach($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $this->pullArrayFromIds($id));
+        list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        return $status;
+        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        parent::attach($ids, [], $touch);
+        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
     }
 
     /**
@@ -34,11 +34,11 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {
-        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $this->pullArrayFromIds($ids));
-        $status = parent::detach($ids, $touch);
-        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $this->pullArrayFromIds($ids));
+        list($idsOnly) = $this->getIdsWithAttributes($ids);
 
-        return $status;
+        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
+        parent::detach($ids, $touch);
+        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $idsOnly);
     }
 
     /**
@@ -49,27 +49,47 @@ class BelongsToManyCustom extends BelongsToMany
      * @param  bool   $touch
      * @return int
      */
-    public function updateExistingPivot($id, array $attributes, $touch = true)
+    public function updateExistingPivot($ids, array $attributes, $touch = true)
     {
-        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), [$id]);
-        $status = parent::updateExistingPivot($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), [$id]);
+        list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        return $status;
+        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        parent::updateExistingPivot($ids, $attributes, $touch);
+        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $idsOnly, $idsAttributes);
     }
-    
-    private function pullArrayFromIds($ids)
+
+    /**
+     * Cleans the ids and ids with attributes
+     * Returns an array with and array of ids and array of id => attributes
+     *
+     * @param  mixed  $id
+     * @param  array  $attributes
+     * @return array
+     */
+    private function getIdsWithAttributes($id, $attributes = [])
     {
-        if ($ids instanceof Model) {
-            $ids = $ids->getKey();
+        $ids = [];
+
+        if ($id instanceof Model) {
+            $ids[$id->getKey()] = $attributes;
+        } elseif ($id instanceof Collection) {
+            foreach ($id as $model) {
+                $ids[$model->getKey()] = $attributes;
+            }
+        } elseif (is_array($id)) {
+            foreach ($id as $key => $attributesArray) {
+                if (is_array($attributesArray)) {
+                    $ids[$key] = array_merge($attributes, $attributesArray);
+                } else {
+                    $ids[$attributesArray] = $attributes;
+                }
+            }
+        } elseif (is_int($id)) {
+            $ids[$id] = $attributes;
         }
 
-        if ($ids instanceof Collection) {
-            $ids = $ids->modelKeys();
-        }
+        $idsOnly = array_keys($ids);
 
-        $ids = (array) $ids;
-        
-        return $ids;
+        return [$idsOnly, $ids];
     }
 }

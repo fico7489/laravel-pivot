@@ -58,7 +58,7 @@ trait PivotEventTrait
      * @param  bool  $halt
      * @return mixed
      */
-    public function fireModelEvent($event, $halt = true, $relationName = null, $pivotIds = [])
+    public function fireModelEvent($event, $halt = true, $relationName = null, $pivotIds = [], $pivotIdsAttributes = [])
     {
         if (! isset(static::$dispatcher)) {
             return true;
@@ -77,7 +77,7 @@ trait PivotEventTrait
             return false;
         }
         
-        $payload = ['model' => $this, 'relation' => $relationName, 'pivotIds' => $pivotIds];
+        $payload = ['model' => $this, 'relation' => $relationName, 'pivotIds' => $pivotIds, 'pivotIdsAttributes' => $pivotIdsAttributes];
 
         return ! empty($result) ? $result : static::$dispatcher->{$method}(
             "eloquent.{$event}: ".static::class, $payload
