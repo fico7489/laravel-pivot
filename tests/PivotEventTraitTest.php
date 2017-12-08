@@ -23,7 +23,7 @@ class PivotEventTraitTest extends TestCase
         
         \Event::listen('eloquent.*', function ($eventName, array $data) {
             if (strpos($eventName, 'eloquent.retrieved') !== 0) {
-                self::$events[] = ['name' => $eventName, 'model' => $data['model'], 'relation' => $data['relation'], 'pivotIds' => $data['pivotIds']];
+                self::$events[] = ['name' => $eventName, 'model' => $data['model'], 'relation' => $data['relation'], 'pivotIds' => $data['pivotIds'], 'pivotIdsAttributes' => $data['pivotIdsAttributes']];
             }
         });
     }
@@ -44,10 +44,34 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, \DB::table('role_user')->count());
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
-        
+
         $pivotIds = self::$events[0]['pivotIds'];
         $this->assertEquals($pivotIds, [1, 2]);
-        
+
+        $pivotIdsAttributes = self::$events[0]['pivotIdsAttributes'];
+        $this->assertEquals($pivotIdsAttributes, [1 => [], 2 => []]);
+
+        $this->assertEquals(2, count(self::$events));
+    }
+
+    public function test_attach_multiple_with_attributes_events()
+    {
+        $this->startListening();
+
+        $this->assertEquals(0, \DB::table('role_user')->count());
+        $user = User::find(1);
+        $user->roles()->attach([1 => ['value' => 123], 2 => ['value' => 456]]);
+
+        $this->assertEquals(2, \DB::table('role_user')->count());
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
+
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1, 2]);
+
+        $pivotIdsAttributes = self::$events[0]['pivotIdsAttributes'];
+        $this->assertEquals($pivotIdsAttributes, [1 => ['value' => 123], 2 => ['value' => 456]]);
+
         $this->assertEquals(2, count(self::$events));
     }
 
@@ -65,8 +89,10 @@ class PivotEventTraitTest extends TestCase
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
 
         $pivotIds = self::$events[0]['pivotIds'];
-
         $this->assertEquals($pivotIds, [1]);
+
+        $pivotIdsAttributes = self::$events[0]['pivotIdsAttributes'];
+        $this->assertEquals($pivotIdsAttributes, [1 => []]);
 
         $this->assertEquals(2, count(self::$events));
     }
@@ -86,6 +112,9 @@ class PivotEventTraitTest extends TestCase
 
         $pivotIds = self::$events[0]['pivotIds'];
         $this->assertEquals($pivotIds, [1, 2]);
+
+        $pivotIdsAttributes = self::$events[0]['pivotIdsAttributes'];
+        $this->assertEquals($pivotIdsAttributes, [1 => [], 2 => []]);
 
         $this->assertEquals(2, count(self::$events));
     }
@@ -162,6 +191,9 @@ class PivotEventTraitTest extends TestCase
         
         $pivotIds = self::$events[0]['pivotIds'];
         $this->assertEquals($pivotIds, [1]);
+
+        $pivotIdsAttributes = self::$events[0]['pivotIdsAttributes'];
+        $this->assertEquals($pivotIdsAttributes, [1 => ['value' => 2]]);
         
         $this->assertEquals(2, count(self::$events));
     }
