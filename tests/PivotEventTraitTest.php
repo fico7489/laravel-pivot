@@ -33,7 +33,28 @@ class PivotEventTraitTest extends TestCase
         self::$events = [];
     }
 
-    public function test_attach_events()
+    public function test_attach_int()
+    {
+        $this->startListening();
+
+        $this->assertEquals(0, \DB::table('role_user')->count());
+        $user = User::find(1);
+        $user->roles()->attach(1);
+
+        $this->assertEquals(1, \DB::table('role_user')->count());
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
+        $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
+
+        $pivotIds = self::$events[0]['pivotIds'];
+        $this->assertEquals($pivotIds, [1]);
+
+        $pivotIdsAttributes = self::$events[0]['pivotIdsAttributes'];
+        $this->assertEquals($pivotIdsAttributes, [1 => []]);
+
+        $this->assertEquals(2, count(self::$events));
+    }
+
+    public function test_attach_array()
     {
         $this->startListening();
 
@@ -54,7 +75,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_attach_multiple_with_attributes_events()
+    public function test_attach_multiple_with_attributes()
     {
         $this->startListening();
 
@@ -75,7 +96,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_attach_model_events()
+    public function test_attach_model()
     {
         $this->startListening();
 
@@ -97,7 +118,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_attach_collection_events()
+    public function test_attach_collection()
     {
         $this->startListening();
 
@@ -119,7 +140,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_detach_events()
+    public function test_detach()
     {
         $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
@@ -138,7 +159,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_detach_model_events()
+    public function test_detach_model()
     {
         $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
@@ -158,7 +179,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_detach_collection_events()
+    public function test_detach_collection()
     {
         $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
@@ -178,7 +199,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
 
-    public function test_update_events()
+    public function test_update()
     {
         $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
@@ -198,7 +219,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(2, count(self::$events));
     }
     
-    public function test_sync_events()
+    public function test_sync()
     {
         $user = User::find(1);
         $user->roles()->attach([2 ,3]);
@@ -215,7 +236,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
     
-    public function test_sync_model_events()
+    public function test_sync_model()
     {
         $user = User::find(1);
         $user->roles()->attach([2, 3]);
@@ -233,7 +254,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_sync_collection_events()
+    public function test_sync_collection()
     {
         $user = User::find(1);
         $user->roles()->attach([2, 3]);
@@ -251,7 +272,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_standard_update_event()
+    public function test_standard_update()
     {
         $user = User::find(1);
         
@@ -265,7 +286,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_relation_null()
+    public function test_relation_is_null()
     {
         $user = User::find(1);
 
