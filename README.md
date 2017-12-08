@@ -135,7 +135,15 @@ class User extends Model
         print_r($pivotIds);
         print_r($pivotIdsAttributes);
     });
-	
+    
+    static::pivotUpdated(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+        echo 'pivotUpdated';
+        echo get_class($model);
+        echo $relationName;
+        print_r($pivotIds);
+        print_r($pivotIdsAttributes);
+    });
+    
     static::pivotDetached(function ($model, $relationName, $pivotIds) {
         echo 'pivotDetached';
         echo get_class($model);
@@ -151,26 +159,97 @@ class Role extends Model
     ....
 ```
 
+#### Attaching 
+
+For attach() or detach() one event is dispatched for both pivot ids.
+
+##### Attaching with int
 Running this code 
 ```
-$user = User::first();           //assuming that pivot table is empty
-$user->roles()->attach([1, 2 => ['attribute' => 'test']]);
+$user = User::first();
+$user->roles()->attach(1);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1]
+[1 => []]
 ```
 
-You will see this output
 
+##### Attaching with array
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach([1]);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1]
+[1 => []]
+```
+
+
+##### Attaching with model
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach(Role::first());
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1]
+[1 => []]
+```
+
+
+##### Attaching with collection
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach(Role::get());
+```
+You will see this output
 ```
 pivotAttached
 App\Models\User
 roles
 [1, 2]
-[1 => [], 2 => ['attribute' => 'test']]
+[1 => [], 2 => []]
 ```
-For attach() or detach() one event is dispatched for both pivot ids.
+
+
+##### Attaching with array (id => attributes)
+Running this code 
+```
+$user = User::first();
+$user->roles()->attach([1, 2 => ['attribute' => 'test']], ['attribute2' => 'test2']);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1, 2]
+[1 => [], 2 => ['attribute' => 'test', 'attribute2' => 'test2']]
+```
+
+
+#### Syncing
+
+For sync() method event is dispatched for each pivot row.
 
 Running this code 
 ```
-$user = User::first();           //assuming that pivot table is empty
+$user = User::first();
 $user->roles()->sync([1, 2]);
 ```
 
@@ -181,14 +260,45 @@ pivotAttached
 App\Models\User
 roles
 [1]
+[1 => []]
 
 pivotAttached
 App\Models\User
 roles
 [2]
+[2 => []]
 ```
 
-For sync() method event is dispatched for each pivot ids.
+#### Detaching
+
+Running this code 
+```
+$user = User::first();
+$user->roles()->detach([1, 2]);
+```
+You will see this output
+```
+pivotAttached
+App\Models\User
+roles
+[1, 2]
+```
+
+#### Updating
+
+Running this code 
+```
+$user = User::first();
+$user->roles()->updateExistingPivot(1, ['attribute' => 'test']);
+```
+You will see this output
+```
+pivotUpdated
+App\Models\User
+roles
+[1]
+[1 => ['attribute' => 'test']]
+```
 
 License
 ----
