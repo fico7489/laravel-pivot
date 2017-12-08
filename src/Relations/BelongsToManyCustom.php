@@ -85,15 +85,15 @@ class BelongsToManyCustom extends BelongsToMany
 
         if ($id instanceof Collection) {
             $cleanId = $id->modelKeys();
-            foreach($cleanId as $value) {
+            foreach ($cleanId as $value) {
                 $cleanIdAttributes[$value] = $attributes;
             }
             return [$cleanId, $cleanIdAttributes];
         }
 
-        if(is_array($id)) {
+        if (is_array($id)) {
             foreach ($id as $key => $value) {
-                if(is_array($value)) {
+                if (is_array($value)) {
                     $cleanId[] = $key;
                     $cleanIdAttributes[$key] = array_merge($value, $attributes);
                 } else {
@@ -104,8 +104,9 @@ class BelongsToManyCustom extends BelongsToMany
             return [$cleanId, $cleanIdAttributes];
         }
 
-        $cleanId = array ($id);
+        $cleanId = [$id];
         $cleanIdAttributes[$id] = $attributes;
+        
         return [$cleanId, $cleanIdAttributes];
     }
 }
