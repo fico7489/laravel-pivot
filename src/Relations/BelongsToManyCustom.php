@@ -5,6 +5,7 @@ namespace Fico7489\Laravel\Pivot\Relations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use function PHPSTORM_META\type;
 
 class BelongsToManyCustom extends BelongsToMany
 {
@@ -16,15 +17,13 @@ class BelongsToManyCustom extends BelongsToMany
      * @param  bool   $touch
      * @return void
      */
-    public function attach($id, array $attributes = [], $touch = true)
+    public function attach($ids, array $attributes = [], $touch = true)
     {
-        list($cleanId, $idAttributes) = $this->cleanIdAndAttributes($id, $attributes);
+        list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $cleanId, $idAttributes);
-        $status = parent::attach($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $cleanId, $idAttributes);
-
-        return $status;
+        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        parent::attach($ids, [], $touch);
+        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
     }
 
     /**
@@ -36,13 +35,11 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = [], $touch = true)
     {
-        list($cleanId) = $this->cleanIdAndAttributes($ids, []);
+        list($idsOnly, $attributes) = $this->getIdsWithAttributes($ids);
 
-        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $cleanId);
-        $status = parent::detach($ids, $touch);
-        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $cleanId);
-
-        return $status;
+        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
+        parent::detach($ids, $touch);
+        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $idsOnly);
     }
 
     /**
@@ -53,60 +50,47 @@ class BelongsToManyCustom extends BelongsToMany
      * @param  bool   $touch
      * @return int
      */
-    public function updateExistingPivot($id, array $attributes, $touch = true)
+    public function updateExistingPivot($ids, array $attributes, $touch = true)
     {
-        list($cleanId, $idAttributes) = $this->cleanIdAndAttributes($id, $attributes);
+        list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $cleanId, $idAttributes);
-        $status = parent::updateExistingPivot($id, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $cleanId, $idAttributes);
-
-        return $status;
+        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        parent::updateExistingPivot($ids, $attributes, $touch);
+        $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $idsOnly, $idsAttributes);
     }
 
     /**
-     * Cleans the Id and attributes
+     * Cleans the ids and ids with attributes
      * Returns an array with and array of ids and array of id => attributes
      *
      * @param  mixed  $id
      * @param  array  $attributes
      * @return array
      */
-    private function cleanIdAndAttributes($id, $attributes = [])
+    private function getIdsWithAttributes($id, $attributes = [])
     {
-        $cleanId = [];
-        $cleanIdAttributes = [];
+        $ids = [];
 
         if ($id instanceof Model) {
-            $cleanId = [$id->getKey()];
-            $cleanIdAttributes[$id->getKey()] = $attributes;
-            return [$cleanId, $cleanIdAttributes];
-        }
-
-        if ($id instanceof Collection) {
-            $cleanId = $id->modelKeys();
-            foreach ($cleanId as $value) {
-                $cleanIdAttributes[$value] = $attributes;
+            $ids[$id->getKey()] = $attributes;
+        } elseif ($id instanceof Collection) {
+            foreach ($id as $model) {
+                $ids[$model->getKey()] = $attributes;
             }
-            return [$cleanId, $cleanIdAttributes];
-        }
-
-        if (is_array($id)) {
-            foreach ($id as $key => $value) {
-                if (is_array($value)) {
-                    $cleanId[] = $key;
-                    $cleanIdAttributes[$key] = array_merge($value, $attributes);
+        } elseif (is_array($id)) {
+            foreach ($id as $key => $attributesArray) {
+                if (is_array($attributesArray)) {
+                    $ids[$key] = array_merge($attributes, $attributesArray);
                 } else {
-                    $cleanId[] = $value;
-                    $cleanIdAttributes[$value] = $attributes;
+                    $ids[$attributesArray] = $attributes;
                 }
             }
-            return [$cleanId, $cleanIdAttributes];
+        } elseif (is_int($id)) {
+            $ids[$id] = $attributes;
         }
 
-        $cleanId = [$id];
-        $cleanIdAttributes[$id] = $attributes;
-        
-        return [$cleanId, $cleanIdAttributes];
+        $idsOnly = array_keys($ids);
+
+        return [$idsOnly, $ids];
     }
 }
