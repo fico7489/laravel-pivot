@@ -2,19 +2,19 @@
 
 This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on  BelongsToMany relation.
 
-## Laravel versions
-
-| Laravel Version | Package Tag | Supported | Development Branch
-|-----------------|-------------|-----------| -----------|
-| 5.5.x | 2.1.x | yes | master
-| 5.4.x | 2.0.x | yes | 2.0
-| 5.3.x | 1.3.x | yes | 1.3
-| 5.2.x | 1.2.x | yes | 1.2
-| <5.2 | - | no |
-
 ## Laravel Problems
 
 In Laravel events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
+
+## Version Compatibility
+
+| Laravel Version | Package Tag | Supported | Development Branch
+|-----------------|-------------|-----------| -----------|
+| 5.5.* | 2.1.* | yes | master
+| 5.4.* | 2.0.* | yes | 2.0
+| 5.3.* | 1.3.* | yes | 1.3
+| 5.2.* | 1.2.* | yes | 1.2
+| <5.2 | - | no |
 
 ## Install
 
