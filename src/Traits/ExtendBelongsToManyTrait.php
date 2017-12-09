@@ -4,7 +4,7 @@ namespace Fico7489\Laravel\Pivot\Traits;
 
 use Fico7489\Laravel\Pivot\Relations\BelongsToManyCustom;
 
-trait BelongsToManyCustomTrait
+trait ExtendBelongsToManyTrait
 {
     /**
      * Define a many-to-many relationship.
