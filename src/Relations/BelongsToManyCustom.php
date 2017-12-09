@@ -21,7 +21,7 @@ class BelongsToManyCustom extends BelongsToMany
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
         $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
-        parent::attach($ids, [], $touch);
+        parent::attach($idsAttributes, [], $touch);
         $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
     }
 
@@ -49,12 +49,12 @@ class BelongsToManyCustom extends BelongsToMany
      * @param  bool   $touch
      * @return int
      */
-    public function updateExistingPivot($ids, array $attributes, $touch = true)
+    public function updateExistingPivot($id, array $attributes, $touch = true)
     {
-        list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
+        list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($id, $attributes);
 
         $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes);
-        parent::updateExistingPivot($ids, $attributes, $touch);
+        parent::updateExistingPivot($id, $attributes, $touch);
         $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $idsOnly, $idsAttributes);
     }
 

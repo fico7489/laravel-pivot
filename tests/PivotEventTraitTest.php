@@ -81,6 +81,9 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(self::$events[0]['pivotIds'], [1, 2]);
         $this->assertEquals(self::$events[0]['pivotIdsAttributes'], [1 => ['value' => 123, 'value2' => 789], 2 => ['value' => 456, 'value2' => 789]]);
         $this->assertEquals(2, count(self::$events));
+
+        $this->assertEquals('123', \DB::table('role_user')->first()->value);
+        $this->assertEquals('789', \DB::table('role_user')->first()->value2);
     }
 
     public function test_attach_model()
@@ -89,15 +92,17 @@ class PivotEventTraitTest extends TestCase
         $role = Role::find(1);
 
         $this->assertEquals(0, \DB::table('role_user')->count());
-        $user->roles()->attach($role);
+        $user->roles()->attach($role, ['value' => 'test']);
 
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotAttached: ' . User::class, 'name'));
 
         $this->assertEquals(self::$events[0]['pivotIds'], [1]);
-        $this->assertEquals(self::$events[0]['pivotIdsAttributes'], [1 => []]);
+        $this->assertEquals(self::$events[0]['pivotIdsAttributes'], [1 => ['value' => 'test']]);
         $this->assertEquals(2, count(self::$events));
+
+        $this->assertEquals('test', \DB::table('role_user')->first()->value);
     }
 
     public function test_attach_collection()
@@ -185,8 +190,10 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(self::$events[0]['pivotIds'], [1]);
         $this->assertEquals(self::$events[0]['pivotIdsAttributes'], [1 => ['value' => 2]]);
         $this->assertEquals(2, count(self::$events));
-    }
 
+        $this->assertEquals(2, \DB::table('role_user')->first()->value);
+    }
+    
     public function test_sync()
     {
         $user = $this->startListening();
@@ -222,10 +229,17 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
+    public function test_sync_db_updates()
+    {
+        $user = $this->startListening();
+        $user->roles()->sync([1 => ['value' => '123']]);
+        $this->assertEquals(123, \DB::table('role_user')->first()->value);
+    }
+
     public function test_standard_update()
     {
         $user = $this->startListening();
-
+        
         $this->startListening();
         $user->update(['name' => 'different']);
 

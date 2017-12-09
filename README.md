@@ -16,12 +16,14 @@ This package introduces new eloquent events for sync(), attach(), detach() or up
 
 In Laravel events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
 
-## How to use
+## Install
 
 1.Install package with composer
 ```
-composer require fico7489/laravel-pivot:"2.1.*"
+composer require fico7489/laravel-pivot:"*"
 ```
+With this statement, a composer will install highest available package version for your current laravel version.
+
 2.Use Fico7489\Laravel\Pivot\Traits\PivotEventTrait trait in your base model or only in particular models.
 
 ```
@@ -37,7 +39,7 @@ abstract class BaseModel extends Model
 
 and that's it, enjoy.
 
-## Eloquent events
+## New eloquent events
 
 You can check all eloquent events here:  https://laravel.com/docs/5.5/eloquent#events) 
 
@@ -111,7 +113,7 @@ You can change only one row in pivot table with updateExistingPivot.
 If sync() is called but rows are not added or deleted events are not dispatched.
 
 
-## See some action
+## Usage
 
 We have three tables in database users(id, name), roles(id, name), role_user(user_id, role_id).
 We have two models : 
@@ -159,11 +161,11 @@ class Role extends Model
     ....
 ```
 
-#### Attaching 
+### Attaching 
 
 For attach() or detach() one event is dispatched for both pivot ids.
 
-##### Attaching with int
+#### Attaching with int
 Running this code 
 ```
 $user = User::first();
@@ -179,7 +181,7 @@ roles
 ```
 
 
-##### Attaching with array
+#### Attaching with array
 Running this code 
 ```
 $user = User::first();
@@ -195,7 +197,7 @@ roles
 ```
 
 
-##### Attaching with model
+#### Attaching with model
 Running this code 
 ```
 $user = User::first();
@@ -211,7 +213,7 @@ roles
 ```
 
 
-##### Attaching with collection
+#### Attaching with collection
 Running this code 
 ```
 $user = User::first();
@@ -227,7 +229,7 @@ roles
 ```
 
 
-##### Attaching with array (id => attributes)
+#### Attaching with array (id => attributes)
 Running this code 
 ```
 $user = User::first();
@@ -243,7 +245,7 @@ roles
 ```
 
 
-#### Syncing
+### Syncing
 
 For sync() method event is dispatched for each pivot row.
 
@@ -269,7 +271,7 @@ roles
 [2 => []]
 ```
 
-#### Detaching
+### Detaching
 
 Running this code 
 ```
@@ -284,7 +286,7 @@ roles
 [1, 2]
 ```
 
-#### Updating
+### Updating
 
 Running this code 
 ```
