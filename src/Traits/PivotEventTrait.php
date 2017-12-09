@@ -4,7 +4,7 @@ namespace Fico7489\Laravel\Pivot\Traits;
 
 trait PivotEventTrait
 {
-    use BelognsToManyCustomTrait;
+    use BelongsToManyCustomTrait;
     
     /**
      * Fire the given event for the model.
