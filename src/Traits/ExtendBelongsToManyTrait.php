@@ -6,7 +6,6 @@ use Fico7489\Laravel\Pivot\Relations\BelongsToManyCustom;
 
 trait ExtendBelongsToManyTrait
 {
-
     /**
      * Define a many-to-many relationship.
      *
