@@ -22,7 +22,7 @@ In Laravel events are not dispatched when BelongsToMany relation (pivot table) i
 ```
 composer require fico7489/laravel-pivot:"*"
 ```
-With this statement composer will install package version for your current laravel version.
+With this statement, a composer will install highest available package version for your current laravel version.
 
 2.Use Fico7489\Laravel\Pivot\Traits\PivotEventTrait trait in your base model or only in particular models.
 
