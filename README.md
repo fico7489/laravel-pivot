@@ -159,11 +159,11 @@ class Role extends Model
     ....
 ```
 
-#### Attaching 
+### Attaching 
 
 For attach() or detach() one event is dispatched for both pivot ids.
 
-##### Attaching with int
+#### Attaching with int
 Running this code 
 ```
 $user = User::first();
@@ -179,7 +179,7 @@ roles
 ```
 
 
-##### Attaching with array
+#### Attaching with array
 Running this code 
 ```
 $user = User::first();
@@ -195,7 +195,7 @@ roles
 ```
 
 
-##### Attaching with model
+#### Attaching with model
 Running this code 
 ```
 $user = User::first();
@@ -211,7 +211,7 @@ roles
 ```
 
 
-##### Attaching with collection
+#### Attaching with collection
 Running this code 
 ```
 $user = User::first();
@@ -227,7 +227,7 @@ roles
 ```
 
 
-##### Attaching with array (id => attributes)
+#### Attaching with array (id => attributes)
 Running this code 
 ```
 $user = User::first();
@@ -243,7 +243,7 @@ roles
 ```
 
 
-#### Syncing
+### Syncing
 
 For sync() method event is dispatched for each pivot row.
 
@@ -269,7 +269,7 @@ roles
 [2 => []]
 ```
 
-#### Detaching
+### Detaching
 
 Running this code 
 ```
@@ -284,7 +284,7 @@ roles
 [1, 2]
 ```
 
-#### Updating
+### Updating
 
 Running this code 
 ```
