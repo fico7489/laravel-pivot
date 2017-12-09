@@ -49,6 +49,7 @@ class CreateDatabase extends Migration
                 ->onUpdate('cascade')->onDelete('cascade');
 
             $table->integer('value')->nullable();
+            $table->integer('value2')->nullable();
 
             $table->timestamps();
         });
