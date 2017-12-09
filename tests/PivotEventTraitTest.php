@@ -189,6 +189,8 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(self::$events[0]['pivotIds'], [1]);
         $this->assertEquals(self::$events[0]['pivotIdsAttributes'], [1 => ['value' => 2]]);
         $this->assertEquals(2, count(self::$events));
+
+        $this->assertEquals(2, \DB::table('role_user')->first()->value);
     }
     
     public function test_sync()
@@ -242,6 +244,13 @@ class PivotEventTraitTest extends TestCase
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetaching: ' . User::class, 'name'));
         $this->assertNotNull($this->get_from_array(self::$events, 'eloquent.pivotDetached: '  . User::class, 'name'));
         $this->assertEquals(4, count(self::$events));
+    }
+
+    public function test_sync_db_updates()
+    {
+        $user = $this->startListening();
+        $user->roles()->sync([1 => ['value' => '123']]);
+        $this->assertEquals(123, \DB::table('role_user')->first()->value);
     }
 
     public function test_standard_update()
