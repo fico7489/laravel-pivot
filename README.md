@@ -100,7 +100,7 @@ You can also see those events here :
 
 Four BelongsToMany methods dispatches events from this package : 
 
-**attach()** 
+**attach()**  
 Dispatches only **one** pivotAttaching and pivotAttached event.  
 Even when more rows are added only **one** event is dispatched but in that case, you can see all changed row ids in the $pivotIds variable, and the changed row ids with attributes in the $pivotIdsAttributes variable.   
 
