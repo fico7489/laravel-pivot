@@ -100,17 +100,23 @@ You can also see those events here :
 
 Four BelongsToMany methods dispatches events from this package : 
 
-**attach()** -> dispatches only **one** pivotAttaching and pivotAttached event. 
-Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable, and the changed row ids related attributes in $pivotIdsAttributes variable.
+**attach()** 
+Dispatches only **one** pivotAttaching and pivotAttached event.  
+Even when more rows are added only **one** event is dispatched but in that case, you can see all changed row ids in the $pivotIds variable, and the changed row ids with attributes in the $pivotIdsAttributes variable.   
 
-**detach()** -> dispatches **one** pivotDetaching and pivotDetached event.
-Even when more rows are deleted only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
+**detach()**  
+Dispatches only **one** pivotDetaching and pivotDetached event.  
+Even when more rows are deleted only **one** event is dispatched but in that case, you can see all changed row ids in the $pivotIds variable.   
 
-**updateExistingPivot()** -> dispatches only one pivotUpdating and pivotUpdated event.
-You can change only one row in pivot table with updateExistingPivot.
+**updateExistingPivot()**  
+Dispatches only **one** pivotUpdating and pivotUpdated event.   
+You can change only one row in the pivot table with updateExistingPivot.   
 
-**sync()** -> dispatches pivotAttaching, pivotAttached, pivotDetaching and pivotDetached events **more times**, depend on how many rows are added in pivot table. E.g. when you call sync() if two rows are added and one is deleted two pivotAttaching(pivotAttached) events and one pivotDetaching(pivotDetached) event will be dispatched. 
-If sync() is called but rows are not added or deleted events are not dispatched.
+**sync()**  
+Dispatches pivotAttaching and pivotAttached event **more times**, depending on how many rows are added in the pivot table. Events are not dispatched if nothing is attached.  
+Dispatches **one** pivotDetaching and pivotDetached event, but you can see all deleted ids in the $pivotIds variable. The event is not dispatched if nothing is detached.  
+E.g. when you call sync() if two rows are added and two are deleted two pivotAttaching(pivotAttached) events and one pivotDetaching(pivotDetached) event will be dispatched.  
+If sync() is called but rows are not added or deleted events are not dispatched.  
 
 
 ## Usage
