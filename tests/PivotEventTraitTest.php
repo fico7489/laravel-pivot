@@ -282,7 +282,7 @@ class PivotEventTraitTest extends TestCase
 
     private function check_database($count, $value, $number = 0, $attribute = 'value')
     {
-        $this->assertEquals($value, \DB::table('role_user')->get()->get($number)->$attribute);
+        $this->assertEquals($value, \DB::table('role_user')->get()[$number]->$attribute);
         $this->assertEquals($count, \DB::table('role_user')->count());
     }
 }
