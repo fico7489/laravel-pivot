@@ -34,12 +34,12 @@ class PivotEventTraitTest extends TestCase
     private function startListening()
     {
         self::$events = [];
-        return User::find(1);
     }
 
     public function test_attach_int()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach(1, ['value' => 123]);
 
         $this->check_events(['eloquent.pivotAttaching: ' . User::class, 'eloquent.pivotAttached: ' . User::class]);
@@ -49,7 +49,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_attach_array()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1 => ['value' => 123], 2 => ['value' => 456]], ['value2' => 789]);
 
         $this->assertEquals(2, \DB::table('role_user')->count());
@@ -61,7 +62,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_attach_model()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $role = Role::find(1);
         $user->roles()->attach($role, ['value' => 123]);
 
@@ -73,7 +75,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_attach_collection()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $roles = Role::take(2)->get();
         $user->roles()->attach($roles, ['value' => 123]);
 
@@ -86,7 +89,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_detach_int()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
@@ -100,7 +104,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_detach_array()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
@@ -114,7 +119,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_detach_model()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
@@ -129,7 +135,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_detach_collection()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
@@ -144,7 +151,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_update()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1, 2 ,3]);
 
         $this->startListening();
@@ -160,8 +168,9 @@ class PivotEventTraitTest extends TestCase
     public function test_sync_int()
     {
         $this->markTestSkipped('You can\'t pass int to sync in laravel < 5.4.0');
-                
-        $user = $this->startListening();
+        
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([2 ,3]);
         $this->assertEquals(2, \DB::table('role_user')->count());
 
@@ -179,7 +188,8 @@ class PivotEventTraitTest extends TestCase
     
     public function test_sync_array()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([2 ,3]);
         $this->assertEquals(2, \DB::table('role_user')->count());
 
@@ -197,9 +207,14 @@ class PivotEventTraitTest extends TestCase
     
     public function test_sync_model()
     {
+<<<<<<< HEAD
         $this->markTestSkipped('You can\'t pass int to sync in laravel < 5.4.0');
         
         $user = $this->startListening();
+=======
+        $this->startListening();
+        $user = User::find(1);
+>>>>>>> bf48912... Remove side effect from function
         $user->roles()->attach([2, 3]);
         $this->assertEquals(2, \DB::table('role_user')->count());
 
@@ -218,7 +233,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_sync_collection()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->roles()->attach([1, 2]);
         $this->assertEquals(2, \DB::table('role_user')->count());
 
@@ -241,7 +257,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_standard_update()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         
         $this->startListening();
         $user->update(['name' => 'different']);
@@ -256,7 +273,8 @@ class PivotEventTraitTest extends TestCase
 
     public function test_relation_is_null()
     {
-        $user = $this->startListening();
+        $this->startListening();
+        $user = User::find(1);
         $user->update(['name' => 'new_name']);
 
         $eventName = 'eloquent.updating: ' . User::class;
