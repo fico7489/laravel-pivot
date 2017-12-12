@@ -17,4 +17,10 @@ class User extends BaseModel
         return $this->belongsToMany(Role::class)
             ->withPivot(['value']);
     }
+
+    public function sellers()
+    {
+        return $this->belongsToMany(Seller::class)
+            ->withPivot(['value']);
+    }
 }

@@ -84,7 +84,7 @@ class BelongsToManyCustom extends BelongsToMany
                     $ids[$attributesArray] = $attributes;
                 }
             }
-        } elseif (is_int($id)) {
+        } else {
             $ids[$id] = $attributes;
         }
 

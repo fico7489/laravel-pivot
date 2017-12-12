@@ -16,7 +16,7 @@ class CreateDatabase extends Migration
     public function up()
     {
         Schema::create('sellers', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('id');
             $table->string('name');
 
             $table->timestamps();
@@ -54,8 +54,8 @@ class CreateDatabase extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_seller', function (Blueprint $table) {
-            $table->integer('seller_id')->unsigned()->index();
+        Schema::create('seller_user', function (Blueprint $table) {
+            $table->string('seller_id')->index();
             $table->integer('user_id')->unsigned()->index();
 
             $table->primary(['seller_id', 'user_id']);
