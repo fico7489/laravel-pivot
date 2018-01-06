@@ -2,19 +2,19 @@
 
 This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on  BelongsToMany relation.
 
-## Laravel versions
-
-| Laravel Version | Package Tag | Supported | Development Branch
-|-----------------|-------------|-----------| -----------|
-| 5.5.x | 2.1.x | yes | master
-| 5.4.x | 2.0.x | yes | 2.0
-| 5.3.x | 1.3.x | yes | 1.3
-| 5.2.x | 1.2.x | yes | 1.2
-| <5.2 | - | no |
-
 ## Laravel Problems
 
 In Laravel events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
+
+## Version Compatibility
+
+| Laravel Version | Package Tag | Supported | Development Branch
+|-----------------|-------------|-----------| -----------|
+| 5.5.* | 2.1.* | yes | master
+| 5.4.* | 2.0.* | yes | 2.0
+| 5.3.* | 1.3.* | yes | 1.3
+| 5.2.* | 1.2.* | yes | 1.2
+| <5.2 | - | no |
 
 ## Install
 
@@ -100,17 +100,23 @@ You can also see those events here :
 
 Four BelongsToMany methods dispatches events from this package : 
 
-**attach()** -> dispatches only **one** pivotAttaching and pivotAttached event. 
-Even when more rows are added only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable, and the changed row ids related attributes in $pivotIdsAttributes variable.
+**attach()**  
+Dispatches **one** **pivotAttaching** and **one** **pivotAttached** event.  
+Even when more rows are added only **one** event is dispatched for all rows but in that case, you can see all changed row ids in the $pivotIds variable, and the changed row ids with attributes in the $pivotIdsAttributes variable.   
 
-**detach()** -> dispatches **one** pivotDetaching and pivotDetached event.
-Even when more rows are deleted only **one** event is dispatched but in that case you can see all changed row ids in $pivotIds variable.
+**detach()**  
+Dispatches **one** **pivotDetaching** and **one** **pivotDetached** event.  
+Even when more rows are deleted only **one** event is dispatched for all rows but in that case, you can see all changed row ids in the $pivotIds variable.   
 
-**updateExistingPivot()** -> dispatches only one pivotUpdating and pivotUpdated event.
-You can change only one row in pivot table with updateExistingPivot.
+**updateExistingPivot()**  
+Dispatches **one** **pivotUpdating** and **one** **pivotUpdated** event.   
+You can change only one row in the pivot table with updateExistingPivot.   
 
-**sync()** -> dispatches pivotAttaching, pivotAttached, pivotDetaching and pivotDetached events **more times**, depend on how many rows are added in pivot table. E.g. when you call sync() if two rows are added and one is deleted two pivotAttaching(pivotAttached) events and one pivotDetaching(pivotDetached) event will be dispatched. 
-If sync() is called but rows are not added or deleted events are not dispatched.
+**sync()**  
+Dispatches **more** **pivotAttaching** and **more** **pivotAttached** events, depending on how many rows are added in the pivot table. These events are not dispatched if nothing is attached.  
+Dispatches **one** **pivotDetaching** and **one** **pivotDetached** event, but you can see all deleted ids in the $pivotIds variable. This event is not dispatched if nothing is detached.  
+E.g. when you call sync() if two rows are added and two are deleted **two** **pivotAttaching** and **two** **pivotAttached** events and **one** **pivotDetaching** and **one** **pivotDetached** event will be dispatched.  
+If sync() is called but rows are not added or deleted events are not dispatched.  
 
 
 ## Usage
