@@ -307,6 +307,10 @@ roles
 [1]
 [1 => ['attribute' => 'test']]
 ```
+## Halting events
+
+To prevent the pivot from attaching, detaching or updating, simply return `false` from within the respective event.
+Note that this will also prevent the `attached`, `detached` or `updated` events from firing.
 
 License
 ----
