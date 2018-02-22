@@ -32,7 +32,7 @@ class BelongsToManyCustom extends BelongsToMany
      * @param  bool  $touch
      * @return int
      */
-    public function detach($ids = [], $touch = true)
+    public function detach($ids = null, $touch = true)
     {
         list($idsOnly) = $this->getIdsWithAttributes($ids);
 
