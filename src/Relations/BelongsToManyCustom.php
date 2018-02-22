@@ -35,7 +35,7 @@ class BelongsToManyCustom extends BelongsToMany
     public function detach($ids = null, $touch = true)
     {
         if (is_null($ids)) {
-            $ids = $this->query->pluck($this->query->qualifyColumn($this->relatedKey))->toArray();
+            $ids = $this->query->pluck($this->relatedKey)->toArray();
         }
 
         list($idsOnly) = $this->getIdsWithAttributes($ids);
