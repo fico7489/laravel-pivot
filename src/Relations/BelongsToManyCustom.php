@@ -34,6 +34,10 @@ class BelongsToManyCustom extends BelongsToMany
      */
     public function detach($ids = null, $touch = true)
     {
+        if (is_null($ids)) {
+            $ids = $this->query->pluck($this->query->qualifyColumn('id'))->toArray();
+        }
+
         list($idsOnly) = $this->getIdsWithAttributes($ids);
 
         $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);

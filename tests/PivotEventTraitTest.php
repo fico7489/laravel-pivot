@@ -176,7 +176,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(0, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: ' . User::class, 'eloquent.pivotDetached: ' . User::class]);
-        $this->check_variables(0, []);
+        $this->check_variables(0, [1, 2, 3]);
     }
 
     public function test_update()
