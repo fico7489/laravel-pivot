@@ -21,8 +21,10 @@ class BelongsToManyCustom extends BelongsToMany
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
         $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
-        parent::attach($ids, $attributes, $touch);
+        $parentResult = parent::attach($ids, $attributes, $touch);
         $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
+
+        return $parentResult;
     }
 
     /**
@@ -41,8 +43,10 @@ class BelongsToManyCustom extends BelongsToMany
         list($idsOnly) = $this->getIdsWithAttributes($ids);
 
         $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
-        parent::detach($ids, $touch);
+        $parentResult = parent::detach($ids, $touch);
         $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $idsOnly);
+        
+        return $parentResult;
     }
 
     /**
@@ -58,8 +62,10 @@ class BelongsToManyCustom extends BelongsToMany
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($id, $attributes);
 
         $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes);
-        parent::updateExistingPivot($id, $attributes, $touch);
+        $parentResult = parent::updateExistingPivot($id, $attributes, $touch);
         $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $idsOnly, $idsAttributes);
+
+        return $parentResult;
     }
 
     /**
