@@ -21,7 +21,7 @@ class BelongsToManyCustom extends BelongsToMany
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
         $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
-        $parentResult = parent::attach($ids, $attributes, $touch);
+        $parentResult = parent::attach($idsAttributes,[], $touch);
         $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
 
         return $parentResult;
