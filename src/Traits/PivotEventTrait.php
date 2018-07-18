@@ -5,6 +5,7 @@ namespace Fico7489\Laravel\Pivot\Traits;
 trait PivotEventTrait
 {
     use ExtendBelongsToManyTrait;
+    use ExtendMorphToManyTrait;
     use ExtendFireModelEventTrait;
 
     public static function pivotAttaching($callback, $priority = 0)
