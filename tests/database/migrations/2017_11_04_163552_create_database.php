@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
  * Class CreateDatabase
@@ -70,6 +70,36 @@ class CreateDatabase extends Migration
 
             $table->timestamps();
         });
+
+        Schema::create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+
+            $table->timestamps();
+        });
+
+        Schema::create('videos', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+
+            $table->timestamps();
+        });
+
+        Schema::create('tags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+
+            $table->timestamps();
+        });
+
+        Schema::create('taggables', function (Blueprint $table) {
+            $table->unsignedInteger('tag_id');
+            $table->unsignedInteger('taggable_id');
+            $table->string('taggable_type');
+
+            $table->integer('value')->nullable();
+            $table->integer('value2')->nullable();
+        });
     }
 
     /**
@@ -84,5 +114,9 @@ class CreateDatabase extends Migration
         Schema::drop('users');
         Schema::drop('roles');
         Schema::drop('sellers');
+        Schema::drop('posts');
+        Schema::drop('videos');
+        Schema::drop('tags');
+        Schema::drop('taggables');
     }
 }
