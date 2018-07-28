@@ -8,13 +8,17 @@ In Laravel events are not dispatched when BelongsToMany relation (pivot table) i
 
 ## Version Compatibility
 
-| Laravel Version | Package Tag | Supported | Development Branch
+| Laravel Version | Package Tag | Active | Development Branch
 |-----------------|-------------|-----------| -----------|
-| 5.5.* | 2.1.* | yes | master
-| 5.4.* | 2.0.* | yes | 2.0
-| 5.3.* | 1.3.* | yes | 1.3
-| 5.2.* | 1.2.* | yes | 1.2
+| 5.6.* | 2.2.* | yes | master
+| 5.5.* | 2.1.* | yes | 2.1
+| 5.4.* | 2.0.* | no | 2.0
+| 5.3.* | 1.3.* | no | 1.3
+| 5.2.* | 1.2.* | no | 1.2
 | <5.2 | - | no |
+
+*from 2.2.7. and 2.1.7 MorphToMany is suported
+*you still can use inactive branched for laravel 5.4.x or older
 
 ## Install
 
@@ -95,6 +99,10 @@ You can also see those events here :
     echo $eventName;  //e.g. 'eloquent.pivotAttached'
 });
 ```
+
+## Suported relations
+
+**BelongsToMany**  and **MorphToMany**  
 
 ## Which events are dispatched and when they are dispatched
 
