@@ -2,9 +2,12 @@
 
 namespace Fico7489\Laravel\Pivot\Tests;
 
+use Fico7489\Laravel\Pivot\Tests\Models\Tag;
+use Fico7489\Laravel\Pivot\Tests\Models\Post;
 use Fico7489\Laravel\Pivot\Tests\Models\Role;
-use Fico7489\Laravel\Pivot\Tests\Models\Seller;
 use Fico7489\Laravel\Pivot\Tests\Models\User;
+use Fico7489\Laravel\Pivot\Tests\Models\Video;
+use Fico7489\Laravel\Pivot\Tests\Models\Seller;
 
 class PivotEventTraitTest extends TestCase
 {
@@ -24,8 +27,19 @@ class PivotEventTraitTest extends TestCase
         Role::create(['name' => 'customer']);
         Role::create(['name' => 'driver']);
 
+        Post::create(['name' => 'Learn Laravel in 30 days']);
+        Post::create(['name' => 'Vue.js for Dummies']);
+
+        Video::create(['name' => 'Laravel from Scratch']);
+        Video::create(['name' => 'ES2015 Fundamentals']);
+
+        Tag::create(['name' => 'technology']);
+        Tag::create(['name' => 'laravel']);
+        Tag::create(['name' => 'java-script']);
+
         $this->assertEquals(0, \DB::table('role_user')->count());
         $this->assertEquals(0, \DB::table('seller_user')->count());
+        $this->assertEquals(0, \DB::table('taggables')->count());
 
         \Event::listen('eloquent.*', function ($eventName, array $data) {
             if (strpos($eventName, 'eloquent.retrieved') !== 0) {
@@ -48,6 +62,17 @@ class PivotEventTraitTest extends TestCase
         $this->check_events(['eloquent.pivotAttaching: ' . User::class, 'eloquent.pivotAttached: ' . User::class]);
         $this->check_variables(0, [1], [1 => ['value' => 123]]);
         $this->check_database(1, 123, 0, 'value');
+    }
+
+    public function test_polymorphic_attach_int()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $post->tags()->attach(1, ['value' => 123]);
+
+        $this->check_events(['eloquent.pivotAttaching: ' . Post::class, 'eloquent.pivotAttached: ' . Post::class]);
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'tags');
+        $this->check_database(1, 123, 0, 'value', 'taggables');
     }
 
     public function test_attach_string()
@@ -75,6 +100,19 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(2, 789, 0, 'value2');
     }
 
+    public function test_polymorphic_attach_array()
+    {
+        $this->startListening();
+        $video = Video::find(1);
+        $video->tags()->attach([1 => ['value' => 123], 2 => ['value' => 456]], ['value2' => 789]);
+
+        $this->assertEquals(2, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotAttaching: ' . Video::class, 'eloquent.pivotAttached: ' . Video::class]);
+        $this->check_variables(0, [1, 2], [1 => ['value' => 123, 'value2' => 789], 2 => ['value' => 456, 'value2' => 789]], 'tags');
+        $this->check_database(2, 123, 0, 'value', 'taggables');
+        $this->check_database(2, 789, 0, 'value2', 'taggables');
+    }
+
     public function test_attach_model()
     {
         $this->startListening();
@@ -86,6 +124,19 @@ class PivotEventTraitTest extends TestCase
         $this->check_events(['eloquent.pivotAttaching: ' . User::class, 'eloquent.pivotAttached: ' . User::class]);
         $this->check_variables(0, [1], [1 => ['value' => 123]]);
         $this->check_database(1, 123);
+    }
+
+    public function test_polymorphic_attach_model()
+    {
+        $this->startListening();
+        $tag = Tag::find(1);
+        $video = Video::find(1);
+        $tag->videos()->attach($video, ['value' => 123]);
+
+        $this->assertEquals(1, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotAttaching: ' . Tag::class, 'eloquent.pivotAttached: ' . Tag::class]);
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'videos');
+        $this->check_database(1, 123, 0, 'value', 'taggables');
     }
 
     public function test_attach_collection()
@@ -102,11 +153,25 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(2, 123, 1);
     }
 
+    public function test_polymorphic_attach_collection()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $tags = Tag::take(2)->get();
+        $post->tags()->attach($tags, ['value' => 123]);
+
+        $this->assertEquals(2, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotAttaching: ' . Post::class, 'eloquent.pivotAttached: ' . Post::class]);
+        $this->check_variables(0, [1, 2], [1 => ['value' => 123], 2 => ['value' => 123]], 'tags');
+        $this->check_database(2, 123, 0, 'value', 'taggables');
+        $this->check_database(2, 123, 1, 'value', 'taggables');
+    }
+
     public function test_detach_int()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([1, 2 ,3]);
+        $user->roles()->attach([1, 2, 3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
         $this->startListening();
@@ -117,11 +182,26 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [2]);
     }
 
+    public function test_polymorphic_detach_int()
+    {
+        $this->startListening();
+        $video = Video::find(1);
+        $video->tags()->attach([1, 2, 3]);
+        $this->assertEquals(3, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $video->tags()->detach(2);
+
+        $this->assertEquals(2, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotDetaching: ' . Video::class, 'eloquent.pivotDetached: ' . Video::class]);
+        $this->check_variables(0, [2], [], 'tags');
+    }
+
     public function test_detach_array()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([1, 2 ,3]);
+        $user->roles()->attach([1, 2, 3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
         $this->startListening();
@@ -132,11 +212,26 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [2, 3]);
     }
 
+    public function test_polymorphic_detach_array()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $post->tags()->attach([1, 2, 3]);
+        $this->assertEquals(3, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $post->tags()->detach([2, 3]);
+
+        $this->assertEquals(1, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotDetaching: ' . Post::class, 'eloquent.pivotDetached: ' . Post::class]);
+        $this->check_variables(0, [2, 3], [], 'tags');
+    }
+
     public function test_detach_model()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([1, 2 ,3]);
+        $user->roles()->attach([1, 2, 3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
         $this->startListening();
@@ -148,11 +243,29 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1]);
     }
 
+    public function test_polymorphic_detach_model()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $video = Video::find(1);
+        $post->tags()->attach([1, 2]);
+        $video->tags()->attach([2]);
+        $this->assertEquals(3, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $tag = Tag::find(2);
+        $tag->videos()->detach($video);
+
+        $this->assertEquals(2, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotDetaching: ' . Tag::class, 'eloquent.pivotDetached: ' . Tag::class]);
+        $this->check_variables(0, [1], [], 'videos');
+    }
+
     public function test_detach_collection()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([1, 2 ,3]);
+        $user->roles()->attach([1, 2, 3]);
         $this->assertEquals(3, \DB::table('role_user')->count());
 
         $this->startListening();
@@ -162,6 +275,22 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: ' . User::class, 'eloquent.pivotDetached: ' . User::class]);
         $this->check_variables(0, [1, 2]);
+    }
+
+    public function test_polymorphic_detach_collection()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $post->tags()->attach([1, 2, 3]);
+        $this->assertEquals(3, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $tags = Tag::take(2)->get();
+        $post->tags()->detach($tags);
+
+        $this->assertEquals(1, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotDetaching: ' . Post::class, 'eloquent.pivotDetached: ' . Post::class]);
+        $this->check_variables(0, [1, 2], [], 'tags');
     }
 
     public function test_detach_null()
@@ -179,11 +308,28 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1, 2, 3]);
     }
 
+    public function test_polymorphic_detach_null()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $post->tags()->attach([1, 2]);
+        $video = Video::find(2);
+        $video->tags()->attach([2, 3]);
+        $this->assertEquals(4, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $post->tags()->detach();
+
+        $this->assertEquals(2, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotDetaching: ' . Post::class, 'eloquent.pivotDetached: ' . Post::class]);
+        $this->check_variables(0, [1, 2], [], 'tags');
+    }
+
     public function test_update()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([1, 2 ,3]);
+        $user->roles()->attach([1, 2, 3]);
 
         $this->startListening();
         $user->roles()->updateExistingPivot(1, ['value' => 123]);
@@ -195,11 +341,27 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(3, null, 2);
     }
 
+    public function test_polymorphic_update()
+    {
+        $this->startListening();
+        $video = Video::find(1);
+        $video->tags()->attach([1, 2, 3]);
+
+        $this->startListening();
+        $video->tags()->updateExistingPivot(1, ['value' => 123]);
+
+        $this->assertEquals(3, \DB::table('taggables')->count());
+        $this->check_events(['eloquent.pivotUpdating: ' . Video::class, 'eloquent.pivotUpdated: ' . Video::class]);
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'tags');
+        $this->check_database(3, 123, 0, 'value', 'taggables');
+        $this->check_database(3, null, 2, 'value', 'taggables');
+    }
+
     public function test_sync_int()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([2 ,3]);
+        $user->roles()->attach([2, 3]);
         $this->assertEquals(2, \DB::table('role_user')->count());
 
         $this->startListening();
@@ -213,12 +375,31 @@ class PivotEventTraitTest extends TestCase
             'eloquent.pivotAttached: ' . User::class,
         ]);
     }
-    
+
+    public function test_polymorphic_sync_int()
+    {
+        $this->startListening();
+        $post = Post::find(1);
+        $post->tags()->attach([2, 3]);
+        $this->assertEquals(2, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $post->tags()->sync(1);
+
+        $this->assertEquals(1, \DB::table('taggables')->count());
+        $this->check_events([
+            'eloquent.pivotDetaching: ' . Post::class,
+            'eloquent.pivotDetached: ' . Post::class,
+            'eloquent.pivotAttaching: ' . Post::class,
+            'eloquent.pivotAttached: ' . Post::class,
+        ]);
+    }
+
     public function test_sync_array()
     {
         $this->startListening();
         $user = User::find(1);
-        $user->roles()->attach([2 ,3]);
+        $user->roles()->attach([2, 3]);
         $this->assertEquals(2, \DB::table('role_user')->count());
 
         $this->startListening();
@@ -232,7 +413,26 @@ class PivotEventTraitTest extends TestCase
             'eloquent.pivotAttached: ' . User::class,
         ]);
     }
-    
+
+    public function test_polymorphic_sync_array()
+    {
+        $this->startListening();
+        $video = Video::find(1);
+        $video->tags()->attach([2, 3]);
+        $this->assertEquals(2, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $video->tags()->sync([1]);
+
+        $this->assertEquals(1, \DB::table('taggables')->count());
+        $this->check_events([
+            'eloquent.pivotDetaching: ' . Video::class,
+            'eloquent.pivotDetached: ' . Video::class,
+            'eloquent.pivotAttaching: ' . Video::class,
+            'eloquent.pivotAttached: ' . Video::class,
+        ]);
+    }
+
     public function test_sync_model()
     {
         $this->startListening();
@@ -249,6 +449,28 @@ class PivotEventTraitTest extends TestCase
             'eloquent.pivotDetached: ' . User::class,
             'eloquent.pivotAttaching: ' . User::class,
             'eloquent.pivotAttached: ' . User::class,
+        ]);
+        $this->assertEquals(4, count(self::$events));
+    }
+
+    public function test_polymorphic_sync_model()
+    {
+        $this->startListening();
+        $video = Video::find(1);
+        $video->tags()->attach([2, 3]);
+        $this->assertEquals(2, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $tag = Tag::find(1);
+        $video->tags()->sync($tag);
+
+        $this->assertEquals(1, \DB::table('taggables')->count());
+
+        $this->check_events([
+            'eloquent.pivotDetaching: ' . Video::class,
+            'eloquent.pivotDetached: ' . Video::class,
+            'eloquent.pivotAttaching: ' . Video::class,
+            'eloquent.pivotAttached: ' . Video::class,
         ]);
         $this->assertEquals(4, count(self::$events));
     }
@@ -277,11 +499,33 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(4, [4], [4 => []]);
     }
 
+    public function test_polymorphic_sync_collection()
+    {
+        $this->startListening();
+        $tag = Tag::find(1);
+        $tag->posts()->attach([1]);
+        $tag->videos()->attach([2]);
+        $this->assertEquals(2, \DB::table('taggables')->count());
+
+        $this->startListening();
+        $posts = Post::where('id', 2)->get();
+        $tag->posts()->sync($posts);
+
+        $this->check_events([
+            'eloquent.pivotDetaching: ' . Tag::class,
+            'eloquent.pivotDetached: ' . Tag::class,
+            'eloquent.pivotAttaching: ' . Tag::class,
+            'eloquent.pivotAttached: ' . Tag::class,
+        ]);
+        $this->check_variables(0, [1], [], 'posts');
+        $this->check_variables(2, [2], [2 => []], 'posts');
+    }
+
     public function test_standard_update()
     {
         $this->startListening();
         $user = User::find(1);
-        
+
         $this->startListening();
         $user->update(['name' => 'different']);
 
