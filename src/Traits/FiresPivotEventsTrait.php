@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Collection;
 trait FiresPivotEventsTrait
 {
     /**
-         * Attach a model to the parent.
-         *
-         * @param  mixed  $id
-         * @param  array  $attributes
-         * @param  bool   $touch
-         * @return void
-         */
+     * Attach a model to the parent.
+     *
+     * @param  mixed  $id
+     * @param  array  $attributes
+     * @param  bool   $touch
+     * @return void
+     */
     public function attach($ids, array $attributes = [], $touch = true)
     {
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
