@@ -33,7 +33,7 @@ trait ExtendFireModelEventTrait
         $payload = ['model' => $this, 'relation' => $relationName, 'pivotIds' => $ids, 'pivotIdsAttributes' => $idsAttributes];
 
         return ! empty($result) ? $result : static::$dispatcher->{$method}(
-            "eloquent.{$event}: ".static::class, $payload
+            "eloquent.{$event}: " . static::class, $payload
         );
     }
 }
