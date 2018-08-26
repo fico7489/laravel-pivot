@@ -12,16 +12,17 @@ trait ExtendMorphToManyTrait
     /**
      * Instantiate a new MorphToMany relationship.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  string  $name
-     * @param  string  $table
-     * @param  string  $foreignPivotKey
-     * @param  string  $relatedPivotKey
-     * @param  string  $parentKey
-     * @param  string  $relatedKey
-     * @param  string  $relationName
-     * @param  bool  $inverseE
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model   $parent
+     * @param string                                $name
+     * @param string                                $table
+     * @param string                                $foreignPivotKey
+     * @param string                                $relatedPivotKey
+     * @param string                                $parentKey
+     * @param string                                $relatedKey
+     * @param string                                $relationName
+     * @param bool                                  $inverseE
+     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     protected function newMorphToMany(Builder $query, Model $parent, $name, $table, $foreignPivotKey,

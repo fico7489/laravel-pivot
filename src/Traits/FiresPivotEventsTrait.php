@@ -10,10 +10,9 @@ trait FiresPivotEventsTrait
     /**
      * Attach a model to the parent.
      *
-     * @param  mixed  $id
-     * @param  array  $attributes
-     * @param  bool   $touch
-     * @return void
+     * @param mixed $id
+     * @param array $attributes
+     * @param bool  $touch
      */
     public function attach($ids, array $attributes = [], $touch = true)
     {
@@ -29,8 +28,9 @@ trait FiresPivotEventsTrait
     /**
      * Detach models from the relationship.
      *
-     * @param  mixed  $ids
-     * @param  bool  $touch
+     * @param mixed $ids
+     * @param bool  $touch
+     *
      * @return int
      */
     public function detach($ids = null, $touch = true)
@@ -51,9 +51,10 @@ trait FiresPivotEventsTrait
     /**
      * Update an existing pivot record on the table.
      *
-     * @param  mixed  $id
-     * @param  array  $attributes
-     * @param  bool   $touch
+     * @param mixed $id
+     * @param array $attributes
+     * @param bool  $touch
+     *
      * @return int
      */
     public function updateExistingPivot($id, array $attributes, $touch = true)
@@ -69,10 +70,11 @@ trait FiresPivotEventsTrait
 
     /**
      * Cleans the ids and ids with attributes
-     * Returns an array with and array of ids and array of id => attributes
+     * Returns an array with and array of ids and array of id => attributes.
      *
-     * @param  mixed  $id
-     * @param  array  $attributes
+     * @param mixed $id
+     * @param array $attributes
+     *
      * @return array
      */
     private function getIdsWithAttributes($id, $attributes = [])

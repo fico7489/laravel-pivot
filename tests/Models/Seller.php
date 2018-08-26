@@ -16,8 +16,6 @@ class Seller extends BaseModel
 
     /**
      * Boot the String Id for the model.
-     *
-     * @return void
      */
     public static function boot()
     {

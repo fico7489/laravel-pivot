@@ -7,13 +7,14 @@ trait ExtendFireModelEventTrait
     /**
      * Fire the given event for the model.
      *
-     * @param  string  $event
-     * @param  bool  $halt
+     * @param string $event
+     * @param bool   $halt
+     *
      * @return mixed
      */
     public function fireModelEvent($event, $halt = true, $relationName = null, $ids = [], $idsAttributes = [])
     {
-        if (! isset(static::$dispatcher)) {
+        if (!isset(static::$dispatcher)) {
             return true;
         }
 
@@ -26,14 +27,14 @@ trait ExtendFireModelEventTrait
             $this->fireCustomModelEvent($event, $method)
         );
 
-        if ($result === false) {
+        if (false === $result) {
             return false;
         }
 
         $payload = ['model' => $this, 'relation' => $relationName, 'pivotIds' => $ids, 'pivotIdsAttributes' => $idsAttributes];
 
-        return ! empty($result) ? $result : static::$dispatcher->{$method}(
-            "eloquent.{$event}: " . static::class, $payload
+        return !empty($result) ? $result : static::$dispatcher->{$method}(
+            "eloquent.{$event}: ".static::class, $payload
         );
     }
 }

@@ -8,7 +8,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
     }
-    
+
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:
@@ -19,7 +19,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
     }
-    
+
     protected function getPackageProviders($app)
     {
         return [ServiceProvider::class];
