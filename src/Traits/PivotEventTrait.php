@@ -8,6 +8,19 @@ trait PivotEventTrait
     use ExtendMorphToManyTrait;
     use ExtendFireModelEventTrait;
 
+    public static function boot()
+    {
+        parent::boot();
+
+        app('events')->listen('eloquent.booted: '.static::class, function ($model) {
+            $model->addObservableEvents([
+                'pivotAttaching', 'pivotAttached',
+                'pivotDetaching', 'pivotDetached',
+                'pivotUpdating', 'pivotUpdated',
+            ]);
+        });
+    }
+
     public static function pivotAttaching($callback, $priority = 0)
     {
         static::registerModelEvent('pivotAttaching', $callback, $priority);
@@ -36,25 +49,5 @@ trait PivotEventTrait
     public static function pivotUpdated($callback, $priority = 0)
     {
         static::registerModelEvent('pivotUpdated', $callback, $priority);
-    }
-
-    /**
-     * Get the observable event names.
-     *
-     * @return array
-     */
-    public function getObservableEvents()
-    {
-        return array_merge(
-            [
-                'creating', 'created', 'updating', 'updated',
-                'deleting', 'deleted', 'saving', 'saved',
-                'restoring', 'restored',
-                'pivotAttaching', 'pivotAttached',
-                'pivotDetaching', 'pivotDetached',
-                'pivotUpdating', 'pivotUpdated',
-            ],
-            $this->observables
-        );
     }
 }
