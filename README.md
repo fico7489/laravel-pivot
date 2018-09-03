@@ -10,8 +10,8 @@ In Laravel events are not dispatched when BelongsToMany relation (pivot table) i
 
 | Laravel Version | Package Tag | Active | Development Branch
 |-----------------|-------------|-----------| -----------|
-| 5.7.* | 2.3.* | yes | master
-| 5.6.* | 2.2.* | yes | 2.2
+| 5.7.* | 2.3.* | yes | 2.3
+| 5.6.* | 2.2.* | yes | master
 | 5.5.* | 2.1.* | yes | 2.1
 | 5.4.* | 2.0.* | no | 2.0
 | 5.3.* | 1.3.* | no | 1.3
