@@ -26,7 +26,7 @@
         "illuminate/database": "5.5.*"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.5.0"
+        "orchestra/testbench": "3.5.*"
     },
     "autoload": {
         "psr-4": {
