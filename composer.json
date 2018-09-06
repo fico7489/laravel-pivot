@@ -26,6 +26,7 @@
         "illuminate/database": "5.7.*"
     },
     "require-dev": {
+        "orchestra/testbench": "3.7.*",
         "friendsofphp/php-cs-fixer": "2.*"
     },
     "autoload": {
