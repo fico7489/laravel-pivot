@@ -17,8 +17,10 @@ class Seller extends BaseModel
     /**
      * Boot the String Id for the model.
      */
-    public static function boot()
+    protected static function boot()
     {
+        parent::boot();
+
         static::creating(function ($model) {
             $model->{$model->getKeyName()} = str_random(255);
         });
