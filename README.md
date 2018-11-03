@@ -8,24 +8,18 @@ In Laravel events are not dispatched when BelongsToMany relation (pivot table) i
 
 ## Version Compatibility
 
-| Laravel Version | Package Tag | Active | Development Branch
+| Laravel Version | Package Tag | Supported | Development Branch
 |-----------------|-------------|-----------| -----------|
-| 5.7.* | - | no | -
-| 5.6.* | 2.2.* | yes | master
-| 5.5.* | 2.1.* | yes | 2.1
-| 5.4.* | 2.0.* | no | 2.0
-| 5.3.* | 1.3.* | no | 1.3
-| 5.2.* | 1.2.* | no | 1.2
-| <5.2 | - | no |
+| >= 5.5.0 | 3.* | yes | master
+| < 5.5.0 | - | no | -
 
- * from 2.2.7. and 2.1.7 MorphToMany is suported
  * you still can use inactive branches for laravel 5.4.x or older
 
 ## Install
 
 1.Install package with composer
 ```
-composer require fico7489/laravel-pivot:"*"
+composer require fico7489/laravel-pivot
 ```
 With this statement, a composer will install highest available package version for your current laravel version.
 
