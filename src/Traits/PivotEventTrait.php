@@ -4,8 +4,7 @@ namespace Fico7489\Laravel\Pivot\Traits;
 
 trait PivotEventTrait
 {
-    use ExtendBelongsToManyTrait;
-    use ExtendMorphToManyTrait;
+    use ExtendRelationsTrait;
     use ExtendFireModelEventTrait;
 
     public static function boot()
