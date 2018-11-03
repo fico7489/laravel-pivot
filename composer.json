@@ -1,44 +1,44 @@
 {
-  "name": "fico7489/laravel-pivot",
-  "description": "This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on BelongsToMany relation.",
-  "keywords": [
-    "laravel BelongsToMany events",
-    "eloquent extra events",
-    "laravel pivot events",
-    "laravel sync events",
-    "eloquent events"
-  ],
-  "homepage": "https://github.com/fico7489/laravel-pivot",
-  "support": {
-    "issues": "https://github.com/fico7489/laravel-pivot/issues",
-    "source": "https://github.com/fico7489/laravel-pivot"
-  },
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Filip Horvat",
-      "email": "filip.horvat@am2studio.hr",
-      "homepage": "http://am2studio.hr",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "illuminate/database": "5.7.*"
-  },
-  "require-dev": {
-    "orchestra/testbench": "3.7.*",
-    "friendsofphp/php-cs-fixer": "2.*"
-  },
-  "autoload": {
-    "psr-4": {
-      "Fico7489\\Laravel\\Pivot\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Fico7489\\Laravel\\Pivot\\Tests\\": "tests/"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "fico7489/laravel-pivot",
+    "description": "This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on BelongsToMany relation.",
+    "keywords": [
+        "laravel BelongsToMany events",
+        "eloquent extra events",
+        "laravel pivot events",
+        "laravel sync events",
+        "eloquent events"
+    ],
+    "homepage": "https://github.com/fico7489/laravel-pivot",
+    "support": {
+        "issues": "https://github.com/fico7489/laravel-pivot/issues",
+        "source": "https://github.com/fico7489/laravel-pivot"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Filip Horvat",
+            "email": "filip.horvat@am2studio.hr",
+            "homepage": "http://am2studio.hr",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "illuminate/database": "5.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.*",
+        "friendsofphp/php-cs-fixer": "2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fico7489\\Laravel\\Pivot\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fico7489\\Laravel\\Pivot\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
