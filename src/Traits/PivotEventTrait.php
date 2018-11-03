@@ -7,17 +7,22 @@ trait PivotEventTrait
     use ExtendRelationsTrait;
     use ExtendFireModelEventTrait;
 
-    public static function boot()
+    /**
+     * Get the observable event names.
+     *
+     * @return array
+     */
+    public function getObservableEvents()
     {
-        parent::boot();
-
-        app('events')->listen('eloquent.booted: '.static::class, function ($model) {
-            $model->addObservableEvents([
+        return array_merge(
+            parent::getObservableEvents(),
+            [
                 'pivotAttaching', 'pivotAttached',
                 'pivotDetaching', 'pivotDetached',
                 'pivotUpdating', 'pivotUpdated',
-            ]);
-        });
+            ],
+            $this->observables
+        );
     }
 
     public static function pivotAttaching($callback, $priority = 0)
