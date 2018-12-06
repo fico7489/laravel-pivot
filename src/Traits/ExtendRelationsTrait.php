@@ -1,11 +1,11 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Traits;
+namespace crishellco\Laravel\Pivot\Traits;
 
-use Fico7489\Laravel\Pivot\Relations\BelongsToManyCustom;
+use crishellco\Laravel\Pivot\Relations\BelongsToManyCustom;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Fico7489\Laravel\Pivot\Relations\MorphToManyCustom;
+use crishellco\Laravel\Pivot\Relations\MorphToManyCustom;
 
 trait ExtendRelationsTrait
 {

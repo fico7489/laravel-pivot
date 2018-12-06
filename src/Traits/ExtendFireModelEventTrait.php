@@ -1,6 +1,6 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Traits;
+namespace crishellco\Laravel\Pivot\Traits;
 
 trait ExtendFireModelEventTrait
 {

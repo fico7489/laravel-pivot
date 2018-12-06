@@ -1,13 +1,13 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Tests;
+namespace crishellco\Laravel\Pivot\Tests;
 
-use Fico7489\Laravel\Pivot\Tests\Models\Tag;
-use Fico7489\Laravel\Pivot\Tests\Models\Post;
-use Fico7489\Laravel\Pivot\Tests\Models\Role;
-use Fico7489\Laravel\Pivot\Tests\Models\User;
-use Fico7489\Laravel\Pivot\Tests\Models\Video;
-use Fico7489\Laravel\Pivot\Tests\Models\Seller;
+use crishellco\Laravel\Pivot\Tests\Models\Tag;
+use crishellco\Laravel\Pivot\Tests\Models\Post;
+use crishellco\Laravel\Pivot\Tests\Models\Role;
+use crishellco\Laravel\Pivot\Tests\Models\User;
+use crishellco\Laravel\Pivot\Tests\Models\Video;
+use crishellco\Laravel\Pivot\Tests\Models\Seller;
 
 class PivotEventTraitTest extends TestCase
 {
@@ -337,10 +337,8 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->check_events([
-            'eloquent.pivotDetaching: '.User::class,
-            'eloquent.pivotDetached: '.User::class,
-            'eloquent.pivotAttaching: '.User::class,
-            'eloquent.pivotAttached: '.User::class,
+            'eloquent.pivotSyncing: '.User::class,
+            'eloquent.pivotSynced: '.User::class,
         ]);
     }
 
@@ -356,10 +354,8 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('taggables')->count());
         $this->check_events([
-            'eloquent.pivotDetaching: '.Post::class,
-            'eloquent.pivotDetached: '.Post::class,
-            'eloquent.pivotAttaching: '.Post::class,
-            'eloquent.pivotAttached: '.Post::class,
+            'eloquent.pivotSyncing: '.Post::class,
+            'eloquent.pivotSynced: '.Post::class,
         ]);
     }
 
@@ -375,10 +371,8 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->check_events([
-            'eloquent.pivotDetaching: '.User::class,
-            'eloquent.pivotDetached: '.User::class,
-            'eloquent.pivotAttaching: '.User::class,
-            'eloquent.pivotAttached: '.User::class,
+            'eloquent.pivotSyncing: '.User::class,
+            'eloquent.pivotSynced: '.User::class,
         ]);
     }
 
@@ -394,10 +388,8 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('taggables')->count());
         $this->check_events([
-            'eloquent.pivotDetaching: '.Video::class,
-            'eloquent.pivotDetached: '.Video::class,
-            'eloquent.pivotAttaching: '.Video::class,
-            'eloquent.pivotAttached: '.Video::class,
+            'eloquent.pivotSyncing: '.Video::class,
+            'eloquent.pivotSynced: '.Video::class,
         ]);
     }
 
@@ -413,12 +405,10 @@ class PivotEventTraitTest extends TestCase
         $user->roles()->sync($role);
 
         $this->check_events([
-            'eloquent.pivotDetaching: '.User::class,
-            'eloquent.pivotDetached: '.User::class,
-            'eloquent.pivotAttaching: '.User::class,
-            'eloquent.pivotAttached: '.User::class,
+            'eloquent.pivotSyncing: '.User::class,
+            'eloquent.pivotSynced: '.User::class,
         ]);
-        $this->assertEquals(4, count(self::$events));
+        $this->assertEquals(2, count(self::$events));
     }
 
     public function test_polymorphic_sync_model()
@@ -435,12 +425,10 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(1, \DB::table('taggables')->count());
 
         $this->check_events([
-            'eloquent.pivotDetaching: '.Video::class,
-            'eloquent.pivotDetached: '.Video::class,
-            'eloquent.pivotAttaching: '.Video::class,
-            'eloquent.pivotAttached: '.Video::class,
+            'eloquent.pivotSyncing: '.Video::class,
+            'eloquent.pivotSynced: '.Video::class,
         ]);
-        $this->assertEquals(4, count(self::$events));
+        $this->assertEquals(2, count(self::$events));
     }
 
     public function test_sync_collection()
@@ -455,16 +443,11 @@ class PivotEventTraitTest extends TestCase
         $user->roles()->sync($roles);
 
         $this->check_events([
-            'eloquent.pivotDetaching: '.User::class,
-            'eloquent.pivotDetached: '.User::class,
-            'eloquent.pivotAttaching: '.User::class,
-            'eloquent.pivotAttached: '.User::class,
-            'eloquent.pivotAttaching: '.User::class,
-            'eloquent.pivotAttached: '.User::class,
+            'eloquent.pivotSyncing: '.User::class,
+            'eloquent.pivotSynced: '.User::class,
         ]);
-        $this->check_variables(0, [1, 2], []);
-        $this->check_variables(2, [3], [3 => []]);
-        $this->check_variables(4, [4], [4 => []]);
+        $this->check_variables(0, [3, 4], []);
+        $this->check_variables(1, [3, 4], []);
     }
 
     public function test_polymorphic_sync_collection()
@@ -480,13 +463,11 @@ class PivotEventTraitTest extends TestCase
         $tag->posts()->sync($posts);
 
         $this->check_events([
-            'eloquent.pivotDetaching: '.Tag::class,
-            'eloquent.pivotDetached: '.Tag::class,
-            'eloquent.pivotAttaching: '.Tag::class,
-            'eloquent.pivotAttached: '.Tag::class,
+            'eloquent.pivotSyncing: '.Tag::class,
+            'eloquent.pivotSynced: '.Tag::class,
         ]);
-        $this->check_variables(0, [1], [], 'posts');
-        $this->check_variables(2, [2], [2 => []], 'posts');
+        $this->check_variables(0, [2], [], 'posts');
+        $this->check_variables(1, [2], [], 'posts');
     }
 
     public function test_standard_update()

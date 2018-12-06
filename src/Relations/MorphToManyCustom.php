@@ -1,9 +1,9 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Relations;
+namespace crishellco\Laravel\Pivot\Relations;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Fico7489\Laravel\Pivot\Traits\FiresPivotEventsTrait;
+use crishellco\Laravel\Pivot\Traits\FiresPivotEventsTrait;
 
 class MorphToManyCustom extends MorphToMany
 {

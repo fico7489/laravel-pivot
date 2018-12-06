@@ -1,8 +1,8 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Tests\Models;
+namespace crishellco\Laravel\Pivot\Tests\Models;
 
-use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
+use crishellco\Laravel\Pivot\Traits\PivotEventTrait;
 
 class Tag extends BaseModel
 {

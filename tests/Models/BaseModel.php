@@ -1,6 +1,6 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Tests\Models;
+namespace crishellco\Laravel\Pivot\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

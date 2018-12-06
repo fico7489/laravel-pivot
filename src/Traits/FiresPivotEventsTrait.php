@@ -1,12 +1,14 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Traits;
+namespace crishellco\Laravel\Pivot\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
 trait FiresPivotEventsTrait
 {
+    protected $isSyncing = false;
+
     /**
      * Attach a model to the parent.
      *
@@ -18,9 +20,15 @@ trait FiresPivotEventsTrait
     {
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        if (!$this->isSyncing) {
+            $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        }
+
         $parentResult = parent::attach($ids, $attributes, $touch);
-        $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
+
+        if (!$this->isSyncing) {
+            $this->parent->fireModelEvent('pivotAttached', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        }
 
         return $parentResult;
     }
@@ -41,9 +49,42 @@ trait FiresPivotEventsTrait
 
         list($idsOnly) = $this->getIdsWithAttributes($ids);
 
-        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
+        if (!$this->isSyncing) {
+            $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
+        }
+
         $parentResult = parent::detach($ids, $touch);
-        $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $idsOnly);
+
+        if (!$this->isSyncing) {
+            $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $idsOnly);
+        }
+
+        return $parentResult;
+    }
+
+    /**
+     * Sync the intermediate tables with a list of IDs or collection of models.
+     *
+     * @param mixed $ids
+     * @param bool  $detaching
+     *
+     * @return array
+     */
+    public function sync($ids, $detaching = true)
+    {
+        $this->isSyncing = true;
+
+        if (is_null($ids)) {
+            $ids = $this->query->pluck($this->query->qualifyColumn($this->relatedKey))->toArray();
+        }
+
+        list($idsOnly) = $this->getIdsWithAttributes($ids);
+
+        $this->parent->fireModelEvent('pivotSyncing', true, $this->getRelationName(), $idsOnly);
+        $parentResult = parent::sync($ids, $detaching);
+        $this->parent->fireModelEvent('pivotSynced', false, $this->getRelationName(), $idsOnly);
+
+        $this->isSyncing = false;
 
         return $parentResult;
     }

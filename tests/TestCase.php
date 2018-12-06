@@ -1,13 +1,13 @@
 <?php
 
-namespace Fico7489\Laravel\Pivot\Tests;
+namespace crishellco\Laravel\Pivot\Tests;
 
-use Fico7489\Laravel\Pivot\Tests\Models\Tag;
-use Fico7489\Laravel\Pivot\Tests\Models\Post;
-use Fico7489\Laravel\Pivot\Tests\Models\Role;
-use Fico7489\Laravel\Pivot\Tests\Models\User;
-use Fico7489\Laravel\Pivot\Tests\Models\Video;
-use Fico7489\Laravel\Pivot\Tests\Models\Seller;
+use crishellco\Laravel\Pivot\Tests\Models\Tag;
+use crishellco\Laravel\Pivot\Tests\Models\Post;
+use crishellco\Laravel\Pivot\Tests\Models\Role;
+use crishellco\Laravel\Pivot\Tests\Models\User;
+use crishellco\Laravel\Pivot\Tests\Models\Video;
+use crishellco\Laravel\Pivot\Tests\Models\Seller;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {

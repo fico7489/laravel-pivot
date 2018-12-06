@@ -1,5 +1,5 @@
 {
-    "name": "fico7489/laravel-pivot",
+    "name": "crishellco/laravel-pivot",
     "description": "This package introduces new eloquent events for sync(), attach(), detach() or updateExistingPivot() methods on BelongsToMany relation.",
     "keywords": [
         "laravel BelongsToMany events",
@@ -8,10 +8,10 @@
         "laravel sync events",
         "eloquent events"
     ],
-    "homepage": "https://github.com/fico7489/laravel-pivot",
+    "homepage": "https://github.com/crishellco/laravel-pivot",
     "support": {
-        "issues": "https://github.com/fico7489/laravel-pivot/issues",
-        "source": "https://github.com/fico7489/laravel-pivot"
+        "issues": "https://github.com/crishellco/laravel-pivot/issues",
+        "source": "https://github.com/crishellco/laravel-pivot"
     },
     "license": "MIT",
     "authors": [
@@ -31,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Fico7489\\Laravel\\Pivot\\": "src"
+            "crishellco\\Laravel\\Pivot\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Fico7489\\Laravel\\Pivot\\Tests\\": "tests/"
+            "crishellco\\Laravel\\Pivot\\Tests\\": "tests/"
         }
     },
     "minimum-stability": "dev",
