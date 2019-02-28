@@ -11,7 +11,7 @@ use Fico7489\Laravel\Pivot\Tests\Models\Seller;
 
 class PivotEventTraitTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
     }
