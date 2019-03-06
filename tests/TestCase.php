@@ -13,7 +13,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
     public static $events = [];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

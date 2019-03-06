@@ -6,7 +6,7 @@ use Fico7489\Laravel\Pivot\Tests\Models\User;
 
 class ObservableEventsTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
     }
