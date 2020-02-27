@@ -289,7 +289,7 @@ $user->roles()->detach([1, 2]);
 ```
 You will see this output
 ```
-pivotAttached
+pivotDetached
 App\Models\User
 roles
 [1, 2]
