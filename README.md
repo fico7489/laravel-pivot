@@ -4,7 +4,9 @@ This package introduces new eloquent events for sync(), attach(), detach() or up
 
 ## Laravel Problems
 
-In Laravel events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
+In Laravel < 5.8 events are not dispatched when BelongsToMany relation (pivot table) is updated with sync(), attach(), detach() or updateExistingPivot() methods, but this package will help with that.
+
+Since Laravel 5.8 the events are dispatched if you use [custom intermediate table models](https://laravel.com/docs/5.8/eloquent-relationships#defining-custom-intermediate-table-models). See section "Intermediate Table / Pivot Model Events" on https://laravel.com/docs/5.8/releases. When using Laravel >= 5.8 this package is still useful if you don't want to create models for all pivot tables.
 
 ## Version Compatibility
 
