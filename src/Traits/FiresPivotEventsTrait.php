@@ -17,7 +17,10 @@ trait FiresPivotEventsTrait
     {
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        if ($this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes) === false) {
+            return false;
+        }
+
         $parentResult = parent::attach($ids, $attributes, $touch);
         $this->parent->fireModelEvent('pivotAttached', false, $this->getRelationName(), $idsOnly, $idsAttributes);
 
@@ -40,7 +43,10 @@ trait FiresPivotEventsTrait
 
         list($idsOnly) = $this->getIdsWithAttributes($ids);
 
-        $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly);
+        if ($this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly) === false) {
+            return false;
+        }
+
         $parentResult = parent::detach($ids, $touch);
         $this->parent->fireModelEvent('pivotDetached', false, $this->getRelationName(), $idsOnly);
 
@@ -59,7 +65,10 @@ trait FiresPivotEventsTrait
     {
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($id, $attributes);
 
-        $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes);
+        if ($this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes) === false) {
+            return false;
+        }
+
         $parentResult = parent::updateExistingPivot($id, $attributes, $touch);
         $this->parent->fireModelEvent('pivotUpdated', false, $this->getRelationName(), $idsOnly, $idsAttributes);
 
