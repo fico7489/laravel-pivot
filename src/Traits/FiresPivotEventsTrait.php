@@ -2,8 +2,8 @@
 
 namespace Fico7489\Laravel\Pivot\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 trait FiresPivotEventsTrait
 {
@@ -11,7 +11,6 @@ trait FiresPivotEventsTrait
      * Attach a model to the parent.
      *
      * @param mixed $id
-     * @param array $attributes
      * @param bool  $touch
      */
     public function attach($ids, array $attributes = [], $touch = true)
@@ -52,7 +51,6 @@ trait FiresPivotEventsTrait
      * Update an existing pivot record on the table.
      *
      * @param mixed $id
-     * @param array $attributes
      * @param bool  $touch
      *
      * @return int
