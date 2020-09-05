@@ -13,7 +13,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
     public static $events = [];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +42,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $this->assertEquals(0, \DB::table('taggables')->count());
 
         \Event::listen('eloquent.*', function ($eventName, array $data) {
-            if (0 !== strpos($eventName, 'eloquent.retrieved')) {
+            if (0 !== strpos($eventName, 'eloquent.retrieved') && 0 !== strpos($eventName, 'eloquent.booting') && 0 !== strpos($eventName, 'eloquent.booted')) {
                 self::$events[] = array_merge([$eventName], $data);
             }
         });
@@ -53,9 +53,9 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 
