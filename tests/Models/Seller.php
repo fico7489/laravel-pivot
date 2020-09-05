@@ -22,7 +22,7 @@ class Seller extends BaseModel
         parent::boot();
 
         static::creating(function ($model) {
-            $model->{$model->getKeyName()} = str_random(16);
+            $model->{$model->getKeyName()} = \Str::random(16);
         });
     }
 

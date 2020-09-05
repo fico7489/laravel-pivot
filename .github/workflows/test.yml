@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php_version: [7.2]
+        laravel_version: [5.5.*,6.*, 7.*]
+
+    steps:
+      - name: Checkout commit
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php_version }}
+
+      - name: Validate composer.json
+        run: composer validate
+      
+      - name: Run composer install
+        run: composer install --no-interaction --no-suggest
+      
+      - name: Install Laravel
+        run: composer update --no-interaction illuminate/database:^${{ matrix.laravel_version }}
+
+      - name: Run PHPUnit
+        run: ./vendor/bin/phpunit
