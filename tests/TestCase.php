@@ -42,8 +42,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $this->assertEquals(0, \DB::table('taggables')->count());
 
         \Event::listen('eloquent.*', function ($eventName, array $data) {
-            if (0 !== strpos($eventName, 'eloquent.retrieved') && 0 !== strpos($eventName, 'eloquent.booting') && 0 !== strpos($eventName, 'eloquent.booted')) {
-                self::$events[] = ['name' => $eventName, 'model' => $data['model'], 'relation' => $data['relation'], 'pivotIds' => $data['pivotIds'], 'pivotIdsAttributes' => $data['pivotIdsAttributes']];
+            if (0 !== strpos($eventName, 'eloquent.retrieved')) {
+                self::$events[] = array_merge([$eventName], $data);
             }
         });
     }

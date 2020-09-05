@@ -519,7 +519,7 @@ class PivotEventTraitTest extends TestCase
     {
         $i = 0;
         foreach ($events as $event) {
-            $this->assertEquals(self::$events[$i]['name'], $event);
+            $this->assertEquals(self::$events[$i][0], $event);
             ++$i;
         }
         $this->assertEquals(count($events), count(self::$events));
@@ -527,9 +527,9 @@ class PivotEventTraitTest extends TestCase
 
     private function check_variables($number, $ids, $idsAttributes = [], $relation = 'roles')
     {
-        $this->assertEquals(self::$events[$number]['pivotIds'], $ids);
-        $this->assertEquals(self::$events[$number]['pivotIdsAttributes'], $idsAttributes);
-        $this->assertEquals(self::$events[$number]['relation'], $relation);
+        $this->assertEquals(self::$events[$number][2], $relation);
+        $this->assertEquals(self::$events[$number][3], $ids);
+        $this->assertEquals(self::$events[$number][4], $idsAttributes);
     }
 
     private function check_database($count, $value, $number = 0, $attribute = 'value', $table = 'role_user')
