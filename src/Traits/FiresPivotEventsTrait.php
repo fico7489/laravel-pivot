@@ -17,7 +17,7 @@ trait FiresPivotEventsTrait
     {
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($ids, $attributes);
 
-        if ($this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes) === false) {
+        if (false === $this->parent->fireModelEvent('pivotAttaching', true, $this->getRelationName(), $idsOnly, $idsAttributes)) {
             return false;
         }
 
@@ -43,7 +43,7 @@ trait FiresPivotEventsTrait
 
         list($idsOnly) = $this->getIdsWithAttributes($ids);
 
-        if ($this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly) === false) {
+        if (false === $this->parent->fireModelEvent('pivotDetaching', true, $this->getRelationName(), $idsOnly)) {
             return false;
         }
 
@@ -65,7 +65,7 @@ trait FiresPivotEventsTrait
     {
         list($idsOnly, $idsAttributes) = $this->getIdsWithAttributes($id, $attributes);
 
-        if ($this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes) === false) {
+        if (false === $this->parent->fireModelEvent('pivotUpdating', true, $this->getRelationName(), $idsOnly, $idsAttributes)) {
             return false;
         }
 
