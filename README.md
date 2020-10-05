@@ -25,8 +25,7 @@ With this statement, a composer will install highest available package version f
 
 2.Use Fico7489\Laravel\Pivot\Traits\PivotEventTrait trait in your base model or only in particular models.
 
-```
-...
+```php
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,9 +49,9 @@ pivotDetaching, pivotDetached,
 pivotUpdating, pivotUpdated
 ```
 
-The best way to catch events is with this model functions : 
+The best way to catch events is with this model functions: 
 
-```
+```php
 public static function boot()
 {
     parent::boot();
@@ -87,9 +86,9 @@ public static function boot()
 }
 ```
 
-You can also see those events here : 
+You can also see those events here: 
 
-```
+```php
 \Event::listen('eloquent.*', function ($eventName, array $data) {
     echo $eventName;  //e.g. 'eloquent.pivotAttached'
 });
@@ -101,7 +100,7 @@ You can also see those events here :
 
 ## Which events are dispatched and when they are dispatched
 
-Four BelongsToMany methods dispatches events from this package : 
+Four BelongsToMany methods dispatches events from this package: 
 
 **attach()**  
 Dispatches **one** **pivotAttaching** and **one** **pivotAttached** event.  
@@ -127,8 +126,8 @@ If sync() is called but rows are not added or deleted events are not dispatched.
 We have three tables in database users(id, name), roles(id, name), role_user(user_id, role_id).
 We have two models : 
 
-```
-...
+```php
+
 class User extends Model
 {
     use PivotEventTrait;
@@ -163,8 +162,7 @@ class User extends Model
     });
 ```
 
-```
-...
+```php
 class Role extends Model
 {
     ....
@@ -176,7 +174,7 @@ For attach() or detach() one event is dispatched for both pivot ids.
 
 #### Attaching with int
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->attach(1);
 ```
@@ -192,7 +190,7 @@ roles
 
 #### Attaching with array
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->attach([1]);
 ```
@@ -208,7 +206,7 @@ roles
 
 #### Attaching with model
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->attach(Role::first());
 ```
@@ -224,7 +222,7 @@ roles
 
 #### Attaching with collection
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->attach(Role::get());
 ```
@@ -240,7 +238,7 @@ roles
 
 #### Attaching with array (id => attributes)
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->attach([1, 2 => ['attribute' => 'test']], ['attribute2' => 'test2']);
 ```
@@ -254,12 +252,12 @@ roles
 ```
 
 
-### Syncing
+### Syncing:
 
 For sync() method event is dispatched for each pivot row.
 
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->sync([1, 2]);
 ```
@@ -280,10 +278,10 @@ roles
 [2 => []]
 ```
 
-### Detaching
+### Detaching:
 
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->detach([1, 2]);
 ```
@@ -295,10 +293,10 @@ roles
 [1, 2]
 ```
 
-### Updating
+### Updating:
 
 Running this code 
-```
+```php
 $user = User::first();
 $user->roles()->updateExistingPivot(1, ['attribute' => 'test']);
 ```
