@@ -20,8 +20,7 @@ trait PivotEventTrait
                 'pivotAttaching', 'pivotAttached',
                 'pivotDetaching', 'pivotDetached',
                 'pivotUpdating', 'pivotUpdated',
-            ],
-            $this->observables
+            ]
         );
     }
 
