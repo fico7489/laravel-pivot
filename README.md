@@ -44,6 +44,7 @@ You can check all eloquent events here:  https://laravel.com/docs/5.5/eloquent#e
 New events are :
 
 ```
+pivotSyncing, pivotSynced,
 pivotAttaching, pivotAttached
 pivotDetaching, pivotDetached,
 pivotUpdating, pivotUpdated
@@ -56,6 +57,14 @@ public static function boot()
 {
     parent::boot();
 
+    static::pivotSyncing(function ($model, $relationName) {
+        //
+    });
+    
+    static::pivotSynced(function ($model, $relationName, $changes) {
+        //
+    });
+    
     static::pivotAttaching(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         //
     });
@@ -115,11 +124,9 @@ Dispatches **one** **pivotUpdating** and **one** **pivotUpdated** event.
 You can change only one row in the pivot table with updateExistingPivot.   
 
 **sync()**  
-Dispatches **more** **pivotAttaching** and **more** **pivotAttached** events, depending on how many rows are added in the pivot table. These events are not dispatched if nothing is attached.  
-Dispatches **one** **pivotDetaching** and **one** **pivotDetached** event, but you can see all deleted ids in the $pivotIds variable. This event is not dispatched if nothing is detached.  
-E.g. when you call sync() if two rows are added and two are deleted **two** **pivotAttaching** and **two** **pivotAttached** events and **one** **pivotDetaching** and **one** **pivotDetached** event will be dispatched.  
-If sync() is called but rows are not added or deleted events are not dispatched.  
-
+Dispatches **one** **pivotSyncing** and **one** **pivotSynced** event.  
+*How does it work:* The sync first detaches all associations and then attaches or updates new entries one by one.  
+Whether a row was attached/detached/updated during sync only **one** event is dispatched for all rows but in that case, you can see all the attached/detached/updated rows in the $changes variables.
 
 ## Usage
 
@@ -137,6 +144,13 @@ class User extends Model
     {
         return $this->belongsToMany(Role::class);
     }
+    
+    static::pivotSynced(function ($model, $relationName, $changes) {
+        echo 'pivotAttached';
+        echo get_class($model);
+        echo $relationName;
+        print_r($changes);
+    });
     
     static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
         echo 'pivotAttached';

@@ -17,12 +17,23 @@ trait PivotEventTrait
         return array_merge(
             parent::getObservableEvents(),
             [
+                'pivotSyncing', 'pivotSynced',
                 'pivotAttaching', 'pivotAttached',
                 'pivotDetaching', 'pivotDetached',
                 'pivotUpdating', 'pivotUpdated',
             ],
             $this->observables
         );
+    }
+
+    public static function pivotSyncing($callback, $priority = 0)
+    {
+        static::registerModelEvent('pivotSyncing', $callback, $priority);
+    }
+
+    public static function pivotSynced($callback, $priority = 0)
+    {
+        static::registerModelEvent('pivotSynced', $callback, $priority);
     }
 
     public static function pivotAttaching($callback, $priority = 0)
