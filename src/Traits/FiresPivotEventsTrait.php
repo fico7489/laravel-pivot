@@ -8,6 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 trait FiresPivotEventsTrait
 {
     /**
+     * Sync the intermediate tables with a list of IDs or collection of models.
+     *
+     * @param mixed $ids
+     * @param bool $detaching
+     *
+     * @return array
+     */
+    public function sync($ids, $detaching = true)
+    {
+        if (false === $this->parent->fireModelEvent('pivotSyncing', true, $this->getRelationName())) {
+            return false;
+        }
+
+        $parentResult = [];
+        $this->parent->withoutEvents(function () use ($ids, $detaching, &$parentResult) {
+            $parentResult = parent::sync($ids, $detaching);
+        });
+
+        $this->parent->fireModelEvent('pivotSynced', false, $this->getRelationName());
+
+        return $parentResult;
+    }
+
+    /**
      * Attach a model to the parent.
      *
      * @param mixed $id
