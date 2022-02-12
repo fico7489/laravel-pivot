@@ -146,7 +146,7 @@ class User extends Model
     }
     
     static::pivotSynced(function ($model, $relationName, $changes) {
-        echo 'pivotAttached';
+        echo 'pivotSynced';
         echo get_class($model);
         echo $relationName;
         print_r($changes);
@@ -268,28 +268,36 @@ roles
 
 ### Syncing:
 
-For sync() method event is dispatched for each pivot row.
-
-Running this code 
+Running this code
 ```php
 $user = User::first();
-$user->roles()->sync([1, 2]);
+$user->roles()->attach([
+    1 => ['pivot_attribut' => 1],
+    2 => ['pivot_attribut' => 0]
+]);
+$user->roles()->sync([
+    1 => ['pivot_attribut' => 0]
+    3 => ['pivot_attribut' => 1]
+]);
 ```
 
 You will see this output
 
 ```
-pivotAttached
+pivotSynced
 App\Models\User
 roles
-[1]
-[1 => []]
-
-pivotAttached
-App\Models\User
-roles
-[2]
-[2 => []]
+[
+  "attached" => [
+    0 => 3
+  ]
+  "detached" => [
+    1 => 2
+  ]
+  "updated" => [
+    0 => 1
+  ]
+]
 ```
 
 ### Detaching:
