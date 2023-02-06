@@ -309,6 +309,31 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(3, null, 2);
     }
 
+    public function test_update_with_sync()
+    {
+        $this->startListening();
+        $user = User::find(1);
+        $user->roles()->attach([1, 2, 3]);
+
+        $this->startListening();
+        $user->roles()->sync([
+            1 => ['value' => 10],
+            2 => ['value' => 11],
+        ], false);
+
+        $this->assertEquals(3, \DB::table('role_user')->count());
+        $this->check_events([
+            'eloquent.pivotUpdating: '.User::class,
+            'eloquent.pivotUpdated: '.User::class,
+            'eloquent.pivotUpdating: '.User::class,
+            'eloquent.pivotUpdated: '.User::class,
+        ]);
+        $this->check_variables(0, [1], [1 => ['value' => 10]]);
+        $this->check_variables(2, [2], [2 => ['value' => 11]]);
+        $this->check_database(3, 10, 0);
+        $this->check_database(3, 11, 1);
+    }
+
     public function test_polymorphic_update()
     {
         $this->startListening();
