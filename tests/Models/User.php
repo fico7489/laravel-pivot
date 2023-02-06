@@ -12,6 +12,8 @@ class User extends BaseModel
 
     protected $fillable = ['name'];
 
+    protected $observables = ['my-custom-observable'];
+
     public function roles()
     {
         return $this->belongsToMany(Role::class)
