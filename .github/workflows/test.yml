@@ -30,7 +30,7 @@ jobs:
         run: composer install --no-interaction --no-suggest
       
       - name: Install Laravel
-        run: composer update --no-interaction illuminate/database:^${{ matrix.laravel_version }}
+        run: composer update --no-interaction illuminate/database:${{ matrix.laravel_version }}
 
       - name: Run PHPUnit
         run: ./vendor/bin/phpunit
