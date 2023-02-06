@@ -117,6 +117,8 @@ You can change only one row in the pivot table with updateExistingPivot.
 **sync()**  
 Dispatches **more** **pivotAttaching** and **more** **pivotAttached** events, depending on how many rows are added in the pivot table. These events are not dispatched if nothing is attached.  
 Dispatches **one** **pivotDetaching** and **one** **pivotDetached** event, but you can see all deleted ids in the $pivotIds variable. This event is not dispatched if nothing is detached.  
+Dispatches **more** **pivotUpdating** and **more** **pivotUpdated** events, depending on how many rows are updated in the pivot table. These events are not dispatched if nothing is attached.
+
 E.g. when you call sync() if two rows are added and two are deleted **two** **pivotAttaching** and **two** **pivotAttached** events and **one** **pivotDetaching** and **one** **pivotDetached** event will be dispatched.  
 If sync() is called but rows are not added or deleted events are not dispatched.  
 

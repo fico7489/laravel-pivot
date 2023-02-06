@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: [7.3, 7.4]
-        laravel_version: [5.5.*,6.*, 7.*, 8.*]
+        php_version: [7.4, 8.1]
+        laravel_version: [5.5.*, 9.*]
 
     steps:
       - name: Checkout commit
         uses: actions/checkout@v2
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php_version }}
 

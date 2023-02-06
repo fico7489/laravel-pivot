@@ -11,7 +11,7 @@ class ObservableEventsTest extends TestCase
         parent::setUp();
     }
 
-    public function test_events()
+    public function testEvents()
     {
         $user = User::find(1);
 
@@ -20,14 +20,14 @@ class ObservableEventsTest extends TestCase
         $this->assertTrue(in_array('pivotAttaching', $events));
     }
 
-    public function test_events_with_custom_observables()
+    public function testEventsWithCustomObservables()
     {
         $user = User::find(1);
 
         $events = $user->getObservableEvents();
 
         $this->assertCount(1, array_filter($events, function ($event) {
-            return $event === 'my-custom-observable';
+            return 'my-custom-observable' === $event;
         }));
     }
 }

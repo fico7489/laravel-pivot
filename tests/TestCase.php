@@ -26,6 +26,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         Role::create(['name' => 'manager']);
         Role::create(['name' => 'customer']);
         Role::create(['name' => 'driver']);
+        Role::create(['name' => 'worker']);
+        Role::create(['name' => 'staff']);
 
         Post::create(['name' => 'Learn Laravel in 30 days']);
         Post::create(['name' => 'Vue.js for Dummies']);
