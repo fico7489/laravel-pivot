@@ -21,7 +21,7 @@ class PivotEventTraitTest extends TestCase
         self::$events = [];
     }
 
-    public function test_attach_int()
+    public function testAttachInt()
     {
         $this->startListening();
         $user = User::find(1);
@@ -32,7 +32,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(1, 123, 0, 'value');
     }
 
-    public function test_polymorphic_attach_int()
+    public function testPolymorphicAttachInt()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -43,7 +43,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(1, 123, 0, 'value', 'taggables');
     }
 
-    public function test_attach_string()
+    public function testAttachString()
     {
         $this->startListening();
         $user = User::find(1);
@@ -55,7 +55,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(1, 123, 0, 'value', 'seller_user');
     }
 
-    public function test_attach_array()
+    public function testAttachArray()
     {
         $this->startListening();
         $user = User::find(1);
@@ -68,7 +68,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(2, 789, 0, 'value2');
     }
 
-    public function test_polymorphic_attach_array()
+    public function testPolymorphicAttachArray()
     {
         $this->startListening();
         $video = Video::find(1);
@@ -81,7 +81,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(2, 789, 0, 'value2', 'taggables');
     }
 
-    public function test_attach_model()
+    public function testAttachModel()
     {
         $this->startListening();
         $user = User::find(1);
@@ -94,7 +94,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(1, 123);
     }
 
-    public function test_polymorphic_attach_model()
+    public function testPolymorphicAttachModel()
     {
         $this->startListening();
         $tag = Tag::find(1);
@@ -107,7 +107,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(1, 123, 0, 'value', 'taggables');
     }
 
-    public function test_attach_collection()
+    public function testAttachCollection()
     {
         $this->startListening();
         $user = User::find(1);
@@ -121,7 +121,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(2, 123, 1);
     }
 
-    public function test_polymorphic_attach_collection()
+    public function testPolymorphicAttachCollection()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -135,7 +135,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(2, 123, 1, 'value', 'taggables');
     }
 
-    public function test_detach_int()
+    public function testDetachInt()
     {
         $this->startListening();
         $user = User::find(1);
@@ -150,7 +150,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [2]);
     }
 
-    public function test_polymorphic_detach_int()
+    public function testPolymorphicDetachInt()
     {
         $this->startListening();
         $video = Video::find(1);
@@ -165,7 +165,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [2], [], 'tags');
     }
 
-    public function test_detach_array()
+    public function testDetachArray()
     {
         $this->startListening();
         $user = User::find(1);
@@ -180,7 +180,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [2, 3]);
     }
 
-    public function test_polymorphic_detach_array()
+    public function testPolymorphicDetachArray()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -195,7 +195,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [2, 3], [], 'tags');
     }
 
-    public function test_detach_model()
+    public function testDetachModel()
     {
         $this->startListening();
         $user = User::find(1);
@@ -211,7 +211,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1]);
     }
 
-    public function test_polymorphic_detach_model()
+    public function testPolymorphicDetachModel()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -229,7 +229,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1], [], 'videos');
     }
 
-    public function test_detach_collection()
+    public function testDetachCollection()
     {
         $this->startListening();
         $user = User::find(1);
@@ -245,7 +245,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1, 2]);
     }
 
-    public function test_polymorphic_detach_collection()
+    public function testPolymorphicDetachCollection()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -261,7 +261,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1, 2], [], 'tags');
     }
 
-    public function test_detach_null()
+    public function testDetachNull()
     {
         $this->startListening();
         $user = User::find(1);
@@ -276,7 +276,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1, 2, 3]);
     }
 
-    public function test_polymorphic_detach_null()
+    public function testPolymorphicDetachNull()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -293,7 +293,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(0, [1, 2], [], 'tags');
     }
 
-    public function test_update()
+    public function testUpdate()
     {
         $this->startListening();
         $user = User::find(1);
@@ -309,7 +309,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(3, null, 2);
     }
 
-    public function test_update_with_sync()
+    public function testUpdateWithSync()
     {
         $this->startListening();
         $user = User::find(1);
@@ -334,7 +334,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(3, 11, 1);
     }
 
-    public function test_polymorphic_update()
+    public function testPolymorphicUpdate()
     {
         $this->startListening();
         $video = Video::find(1);
@@ -350,7 +350,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_database(3, null, 2, 'value', 'taggables');
     }
 
-    public function test_sync_int()
+    public function testSyncInt()
     {
         $this->startListening();
         $user = User::find(1);
@@ -369,7 +369,7 @@ class PivotEventTraitTest extends TestCase
         ]);
     }
 
-    public function test_polymorphic_sync_int()
+    public function testPolymorphicSyncInt()
     {
         $this->startListening();
         $post = Post::find(1);
@@ -388,7 +388,7 @@ class PivotEventTraitTest extends TestCase
         ]);
     }
 
-    public function test_sync_array()
+    public function testSyncArray()
     {
         $this->startListening();
         $user = User::find(1);
@@ -407,7 +407,7 @@ class PivotEventTraitTest extends TestCase
         ]);
     }
 
-    public function test_polymorphic_sync_array()
+    public function testPolymorphicSyncArray()
     {
         $this->startListening();
         $video = Video::find(1);
@@ -426,7 +426,7 @@ class PivotEventTraitTest extends TestCase
         ]);
     }
 
-    public function test_sync_model()
+    public function testSyncModel()
     {
         $this->startListening();
         $user = User::find(1);
@@ -446,7 +446,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_polymorphic_sync_model()
+    public function testPolymorphicSyncModel()
     {
         $this->startListening();
         $video = Video::find(1);
@@ -468,7 +468,7 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(4, count(self::$events));
     }
 
-    public function test_sync_collection()
+    public function testSyncCollection()
     {
         $this->startListening();
         $user = User::find(1);
@@ -492,7 +492,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(4, [4], [4 => []]);
     }
 
-    public function test_polymorphic_sync_collection()
+    public function testPolymorphicSyncCollection()
     {
         $this->startListening();
         $tag = Tag::find(1);
@@ -514,7 +514,7 @@ class PivotEventTraitTest extends TestCase
         $this->check_variables(2, [2], [2 => []], 'posts');
     }
 
-    public function test_standard_update()
+    public function testStandardUpdate()
     {
         $this->startListening();
         $user = User::find(1);
@@ -530,7 +530,7 @@ class PivotEventTraitTest extends TestCase
         ]);
     }
 
-    public function test_relation_is_null()
+    public function testRelationIsNull()
     {
         $this->startListening();
         $user = User::find(1);
