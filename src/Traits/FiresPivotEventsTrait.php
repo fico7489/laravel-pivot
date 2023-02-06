@@ -76,6 +76,20 @@ trait FiresPivotEventsTrait
     }
 
     /**
+     * Sync the intermediate tables with a list of IDs or collection of models.
+     *
+     * @param  \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Model|array  $ids
+     * @param  bool  $detaching
+     * @return array
+     */
+    public function sync($ids, $detaching = true)
+    {
+        $changes = parent::sync($ids, $detaching);
+
+        return $changes;
+    }
+
+    /**
      * Cleans the ids and ids with attributes
      * Returns an array with and array of ids and array of id => attributes.
      *
