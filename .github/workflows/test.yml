@@ -26,11 +26,11 @@ jobs:
       - name: Validate composer.json
         run: composer validate
 
-      - name: CS fixer
-        run: vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix
-
       - name: Run composer install
         run: composer install --no-interaction --no-suggest
+
+      - name: CS fixer
+        run: vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix
 
       - name: Install Laravel
         run: composer update --no-interaction illuminate/database:${{ matrix.laravel_version }}
