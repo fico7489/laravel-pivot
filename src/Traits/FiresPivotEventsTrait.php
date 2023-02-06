@@ -78,13 +78,16 @@ trait FiresPivotEventsTrait
     /**
      * Sync the intermediate tables with a list of IDs or collection of models.
      *
-     * @param  \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Model|array  $ids
-     * @param  bool  $detaching
+     * @param \Illuminate\Support\Collection|\Illuminate\Database\Eloquent\Model|array $ids
+     * @param bool                                                                     $detaching
+     *
      * @return array
      */
     public function sync($ids, $detaching = true)
     {
         $changes = parent::sync($ids, $detaching);
+
+        $this->parent->fireModelEvent('pivotSynced', false, $this->getRelationName(), $changes);
 
         return $changes;
     }
