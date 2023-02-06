@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: [7.4, 9.1]
+        php_version: [7.4, 8.1]
         laravel_version: [5.5.*, 9.*]
 
     steps:
