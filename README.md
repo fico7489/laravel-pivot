@@ -56,27 +56,27 @@ public static function boot()
 {
     parent::boot();
 
-    static::pivotAttaching(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotAttaching(function ($model, $relationName, $pivotClass, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotAttached(function ($model, $relationName, $pivotClass, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotDetaching(function ($model, $relationName, $pivotIds) {
+    static::pivotDetaching(function ($model, $relationName, $pivotClass, $pivotIds) {
         //
     });
 
-    static::pivotDetached(function ($model, $relationName, $pivotIds) {
+    static::pivotDetached(function ($model, $relationName, $pivotClass, $pivotIds) {
         //
     });
     
-    static::pivotUpdating(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotUpdating(function ($model, $relationName, $pivotClass, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
-    static::pivotUpdated(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotUpdated(function ($model, $relationName, $pivotClass, $pivotIds, $pivotIdsAttributes) {
         //
     });
     
@@ -140,26 +140,29 @@ class User extends Model
         return $this->belongsToMany(Role::class);
     }
     
-    static::pivotAttached(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotAttached(function ($model, $relationName, $pivotClass, $pivotIds, $pivotIdsAttributes) {
         echo 'pivotAttached';
         echo get_class($model);
         echo $relationName;
+        echo $pivotClass;
         print_r($pivotIds);
         print_r($pivotIdsAttributes);
     });
     
-    static::pivotUpdated(function ($model, $relationName, $pivotIds, $pivotIdsAttributes) {
+    static::pivotUpdated(function ($model, $relationName, $pivotClass, $pivotIds, $pivotIdsAttributes) {
         echo 'pivotUpdated';
         echo get_class($model);
         echo $relationName;
+        echo $pivotClass;
         print_r($pivotIds);
         print_r($pivotIdsAttributes);
     });
     
-    static::pivotDetached(function ($model, $relationName, $pivotIds) {
+    static::pivotDetached(function ($model, $relationName, $pivotClass, $pivotIds) {
         echo 'pivotDetached';
         echo get_class($model);
         echo $relationName;
+        echo $pivotClass;
         print_r($pivotIds);
     });
 ```
@@ -185,6 +188,7 @@ You will see this output
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [1]
 [1 => []]
 ```
@@ -201,6 +205,7 @@ You will see this output
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [1]
 [1 => []]
 ```
@@ -217,6 +222,7 @@ You will see this output
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [1]
 [1 => []]
 ```
@@ -233,6 +239,7 @@ You will see this output
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [1, 2]
 [1 => [], 2 => []]
 ```
@@ -249,6 +256,7 @@ You will see this output
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [1, 2]
 [1 => [], 2 => ['attribute' => 'test', 'attribute2' => 'test2']]
 ```
@@ -270,12 +278,14 @@ You will see this output
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [1]
 [1 => []]
 
 pivotAttached
 App\Models\User
 roles
+App\Models\Role
 [2]
 [2 => []]
 ```
@@ -292,6 +302,7 @@ You will see this output
 pivotDetached
 App\Models\User
 roles
+App\Models\Role
 [1, 2]
 ```
 
@@ -307,6 +318,7 @@ You will see this output
 pivotUpdated
 App\Models\User
 roles
+App\Models\Role
 [1]
 [1 => ['attribute' => 'test']]
 ```
