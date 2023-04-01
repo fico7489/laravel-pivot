@@ -28,7 +28,7 @@ class PivotEventTraitTest extends TestCase
         $user->roles()->attach(1, ['value' => 123]);
 
         $this->check_events(['eloquent.pivotAttaching: '.User::class, 'eloquent.pivotAttached: '.User::class]);
-        $this->check_variables(0, [1], [1 => ['value' => 123]]);
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'roles', Role::class);
         $this->check_database(1, 123, 0, 'value');
     }
 
@@ -39,7 +39,7 @@ class PivotEventTraitTest extends TestCase
         $post->tags()->attach(1, ['value' => 123]);
 
         $this->check_events(['eloquent.pivotAttaching: '.Post::class, 'eloquent.pivotAttached: '.Post::class]);
-        $this->check_variables(0, [1], [1 => ['value' => 123]], 'tags');
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'tags', Tag::class);
         $this->check_database(1, 123, 0, 'value', 'taggables');
     }
 
@@ -51,7 +51,7 @@ class PivotEventTraitTest extends TestCase
         $user->sellers()->attach($seller->id, ['value' => 123]);
 
         $this->check_events(['eloquent.pivotAttaching: '.User::class, 'eloquent.pivotAttached: '.User::class]);
-        $this->check_variables(0, [$seller->id], [$seller->id => ['value' => 123]], 'sellers');
+        $this->check_variables(0, [$seller->id], [$seller->id => ['value' => 123]], 'sellers', Seller::class);
         $this->check_database(1, 123, 0, 'value', 'seller_user');
     }
 
@@ -63,7 +63,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotAttaching: '.User::class, 'eloquent.pivotAttached: '.User::class]);
-        $this->check_variables(0, [1, 2], [1 => ['value' => 123, 'value2' => 789], 2 => ['value' => 456, 'value2' => 789]]);
+        $this->check_variables(0, [1, 2], [1 => ['value' => 123, 'value2' => 789], 2 => ['value' => 456, 'value2' => 789]], 'roles', Role::class);
         $this->check_database(2, 123);
         $this->check_database(2, 789, 0, 'value2');
     }
@@ -76,7 +76,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotAttaching: '.Video::class, 'eloquent.pivotAttached: '.Video::class]);
-        $this->check_variables(0, [1, 2], [1 => ['value' => 123, 'value2' => 789], 2 => ['value' => 456, 'value2' => 789]], 'tags');
+        $this->check_variables(0, [1, 2], [1 => ['value' => 123, 'value2' => 789], 2 => ['value' => 456, 'value2' => 789]], 'tags', Tag::class);
         $this->check_database(2, 123, 0, 'value', 'taggables');
         $this->check_database(2, 789, 0, 'value2', 'taggables');
     }
@@ -90,7 +90,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotAttaching: '.User::class, 'eloquent.pivotAttached: '.User::class]);
-        $this->check_variables(0, [1], [1 => ['value' => 123]]);
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'roles', Role::class);
         $this->check_database(1, 123);
     }
 
@@ -103,7 +103,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotAttaching: '.Tag::class, 'eloquent.pivotAttached: '.Tag::class]);
-        $this->check_variables(0, [1], [1 => ['value' => 123]], 'videos');
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'videos', Video::class);
         $this->check_database(1, 123, 0, 'value', 'taggables');
     }
 
@@ -116,7 +116,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotAttaching: '.User::class, 'eloquent.pivotAttached: '.User::class]);
-        $this->check_variables(0, [1, 2], [1 => ['value' => 123], 2 => ['value' => 123]]);
+        $this->check_variables(0, [1, 2], [1 => ['value' => 123], 2 => ['value' => 123]], 'roles', Role::class);
         $this->check_database(2, 123);
         $this->check_database(2, 123, 1);
     }
@@ -130,7 +130,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotAttaching: '.Post::class, 'eloquent.pivotAttached: '.Post::class]);
-        $this->check_variables(0, [1, 2], [1 => ['value' => 123], 2 => ['value' => 123]], 'tags');
+        $this->check_variables(0, [1, 2], [1 => ['value' => 123], 2 => ['value' => 123]], 'tags', Tag::class);
         $this->check_database(2, 123, 0, 'value', 'taggables');
         $this->check_database(2, 123, 1, 'value', 'taggables');
     }
@@ -147,7 +147,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: '.User::class, 'eloquent.pivotDetached: '.User::class]);
-        $this->check_variables(0, [2]);
+        $this->check_variables(0, [2], [], 'roles', Role::class);
     }
 
     public function testPolymorphicDetachInt()
@@ -162,7 +162,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotDetaching: '.Video::class, 'eloquent.pivotDetached: '.Video::class]);
-        $this->check_variables(0, [2], [], 'tags');
+        $this->check_variables(0, [2], [], 'tags', Tag::class);
     }
 
     public function testDetachArray()
@@ -177,7 +177,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: '.User::class, 'eloquent.pivotDetached: '.User::class]);
-        $this->check_variables(0, [2, 3]);
+        $this->check_variables(0, [2, 3], [], 'roles', Role::class);
     }
 
     public function testPolymorphicDetachArray()
@@ -192,7 +192,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotDetaching: '.Post::class, 'eloquent.pivotDetached: '.Post::class]);
-        $this->check_variables(0, [2, 3], [], 'tags');
+        $this->check_variables(0, [2, 3], [], 'tags', Tag::class);
     }
 
     public function testDetachModel()
@@ -208,7 +208,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: '.User::class, 'eloquent.pivotDetached: '.User::class]);
-        $this->check_variables(0, [1]);
+        $this->check_variables(0, [1], [], 'roles', Role::class);
     }
 
     public function testPolymorphicDetachModel()
@@ -226,7 +226,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotDetaching: '.Tag::class, 'eloquent.pivotDetached: '.Tag::class]);
-        $this->check_variables(0, [1], [], 'videos');
+        $this->check_variables(0, [1], [], 'videos', Video::class);
     }
 
     public function testDetachCollection()
@@ -242,7 +242,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: '.User::class, 'eloquent.pivotDetached: '.User::class]);
-        $this->check_variables(0, [1, 2]);
+        $this->check_variables(0, [1, 2], [], 'roles', Role::class);
     }
 
     public function testPolymorphicDetachCollection()
@@ -258,7 +258,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(1, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotDetaching: '.Post::class, 'eloquent.pivotDetached: '.Post::class]);
-        $this->check_variables(0, [1, 2], [], 'tags');
+        $this->check_variables(0, [1, 2], [], 'tags', Tag::class);
     }
 
     public function testDetachNull()
@@ -273,7 +273,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(0, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotDetaching: '.User::class, 'eloquent.pivotDetached: '.User::class]);
-        $this->check_variables(0, [1, 2, 3]);
+        $this->check_variables(0, [1, 2, 3], [], 'roles', Role::class);
     }
 
     public function testPolymorphicDetachNull()
@@ -290,7 +290,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(2, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotDetaching: '.Post::class, 'eloquent.pivotDetached: '.Post::class]);
-        $this->check_variables(0, [1, 2], [], 'tags');
+        $this->check_variables(0, [1, 2], [], 'tags', Tag::class);
     }
 
     public function testUpdate()
@@ -304,7 +304,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(3, \DB::table('role_user')->count());
         $this->check_events(['eloquent.pivotUpdating: '.User::class, 'eloquent.pivotUpdated: '.User::class]);
-        $this->check_variables(0, [1], [1 => ['value' => 123]]);
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'roles', Role::class);
         $this->check_database(3, 123, 0);
         $this->check_database(3, null, 2);
     }
@@ -328,8 +328,8 @@ class PivotEventTraitTest extends TestCase
             'eloquent.pivotUpdating: '.User::class,
             'eloquent.pivotUpdated: '.User::class,
         ]);
-        $this->check_variables(0, [1], [1 => ['value' => 10]]);
-        $this->check_variables(2, [2], [2 => ['value' => 11]]);
+        $this->check_variables(0, [1], [1 => ['value' => 10]], 'roles', Role::class);
+        $this->check_variables(2, [2], [2 => ['value' => 11]], 'roles', Role::class);
         $this->check_database(3, 10, 0);
         $this->check_database(3, 11, 1);
     }
@@ -345,7 +345,7 @@ class PivotEventTraitTest extends TestCase
 
         $this->assertEquals(3, \DB::table('taggables')->count());
         $this->check_events(['eloquent.pivotUpdating: '.Video::class, 'eloquent.pivotUpdated: '.Video::class]);
-        $this->check_variables(0, [1], [1 => ['value' => 123]], 'tags');
+        $this->check_variables(0, [1], [1 => ['value' => 123]], 'tags', Tag::class);
         $this->check_database(3, 123, 0, 'value', 'taggables');
         $this->check_database(3, null, 2, 'value', 'taggables');
     }
@@ -487,9 +487,9 @@ class PivotEventTraitTest extends TestCase
             'eloquent.pivotAttaching: '.User::class,
             'eloquent.pivotAttached: '.User::class,
         ]);
-        $this->check_variables(0, [1, 2], []);
-        $this->check_variables(2, [3], [3 => []]);
-        $this->check_variables(4, [4], [4 => []]);
+        $this->check_variables(0, [1, 2], [], 'roles', Role::class);
+        $this->check_variables(2, [3], [3 => []], 'roles', Role::class);
+        $this->check_variables(4, [4], [4 => []], 'roles', Role::class);
     }
 
     public function testPolymorphicSyncCollection()
@@ -510,8 +510,8 @@ class PivotEventTraitTest extends TestCase
             'eloquent.pivotAttaching: '.Tag::class,
             'eloquent.pivotAttached: '.Tag::class,
         ]);
-        $this->check_variables(0, [1], [], 'posts');
-        $this->check_variables(2, [2], [2 => []], 'posts');
+        $this->check_variables(0, [1], [], 'posts', Post::class);
+        $this->check_variables(2, [2], [2 => []], 'posts', Post::class);
     }
 
     public function testStandardUpdate()
@@ -550,11 +550,12 @@ class PivotEventTraitTest extends TestCase
         $this->assertEquals(count($events), count(self::$events));
     }
 
-    private function check_variables($number, $ids, $idsAttributes = [], $relation = 'roles')
+    private function check_variables($number, $ids, $idsAttributes = [], $relation = 'roles', $pivotClass = null)
     {
         $this->assertEquals(self::$events[$number][2], $relation);
-        $this->assertEquals(self::$events[$number][3], $ids);
-        $this->assertEquals(self::$events[$number][4], $idsAttributes);
+        $this->assertEquals(self::$events[$number][3], $pivotClass);
+        $this->assertEquals(self::$events[$number][4], $ids);
+        $this->assertEquals(self::$events[$number][5], $idsAttributes);
     }
 
     private function check_database($count, $value, $number = 0, $attribute = 'value', $table = 'role_user')
