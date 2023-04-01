@@ -9,10 +9,14 @@ trait ExtendFireModelEventTrait
      *
      * @param string $event
      * @param bool   $halt
+     * @param string $relationName
+     * @param string $pivotClass
+     * @param array  $ids
+     * @param array  $idsAttributes
      *
      * @return mixed
      */
-    public function fireModelEvent($event, $halt = true, $relationName = null, $ids = [], $idsAttributes = [])
+    public function fireModelEvent($event, $halt = true, $relationName = null, string $pivotClass = null, $ids = [], $idsAttributes = [])
     {
         if (!isset(static::$dispatcher)) {
             return true;
@@ -31,10 +35,10 @@ trait ExtendFireModelEventTrait
             return false;
         }
 
-        $payload = [$this, $relationName, $ids, $idsAttributes];
+        $payload = [$this, $relationName, $pivotClass, $ids, $idsAttributes];
 
         return !empty($result) ? $result : static::$dispatcher->{$method}(
-            "eloquent.{$event}: ".static::class, $payload
+            "eloquent.{$event}: " . static::class, $payload
         );
     }
 }
