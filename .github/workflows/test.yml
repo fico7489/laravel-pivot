@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: [7.4, 8.2]
-        laravel_version: [5.5.*, 10.*, 11.*]
+        php_version: [7.4, 8.2, 8.3]
+        laravel_version: [5.5.*, 10.*, 11.*, 12.*]
 
     steps:
       - name: Checkout commit
